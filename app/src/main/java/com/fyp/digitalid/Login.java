@@ -37,7 +37,7 @@ public class Login extends AppCompatActivity {
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignUp.class);
+                Intent intent = new Intent(getApplicationContext(), Camera.class);
                 startActivity(intent);
                 finish();
             }
@@ -67,7 +67,7 @@ public class Login extends AppCompatActivity {
                             String[] data = new String[2];
                             data[0] = username;
                             data[1] = password;
-                            PutData putData = new PutData("http://192.168.0.198/digitalid.login.php", "POST", field, data);
+                            PutData putData = new PutData("http://192.168.0.198:8080/digitalid/login.php", "POST", field, data);
                             //192.168.0.198
                             if (putData.startPut()) {
                                 if (putData.onComplete()) {

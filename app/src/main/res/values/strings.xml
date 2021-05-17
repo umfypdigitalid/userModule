@@ -18,4 +18,10 @@
     <string name="email">Email</string>
     <string name="loginhere">Already have an account? Login</string>
     <string name="fullname">Fullname</string>
+    <string name="ic">IC number</string>
+    <string name="birthdate">Date of Birth</string>
+    <string name="address">Home Address</string>
+    <string name="capture_image">Capture Image</string>
+    <string name="next">Next</string>
+    <string name="verifying">Verification in process...</string>
 </resources>
