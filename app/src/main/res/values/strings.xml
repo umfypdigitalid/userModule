@@ -5,7 +5,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="welcome">Welcome</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
@@ -24,4 +24,14 @@
     <string name="capture_image">Capture Image</string>
     <string name="next">Next</string>
     <string name="verifying">Verification in process...</string>
+    <string name="personaldata">Personal Data</string>
+    <string name="verifyaccount">Account Verification</string>
+    <string name="logout">Logout</string>
+    <string name="giveaccess">Give Access</string>
+    <string name="logoutsuccess">Logged Out Successfully</string>
+    <string name="yourinfo">Your Information</string>
+    <string name="takeidphoto">Take ID Photo</string>
+    <string name="scanqr">Scan to Access</string>
+    <string name="result">Result</string>
+    <string name="generate">Generate</string>
 </resources>

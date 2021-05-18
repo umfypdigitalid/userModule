@@ -37,9 +37,11 @@ public class Login extends AppCompatActivity {
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Camera.class);
+                Intent intent = new Intent(Login.this, Camera.class);
                 startActivity(intent);
+/*
                 finish();
+*/
             }
         });
 
@@ -75,7 +77,7 @@ public class Login extends AppCompatActivity {
                                     String result = putData.getResult();
                                     if(result.equals("Login Success")){
                                         Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        Intent intent = new Intent(getApplicationContext(), HomePage.class);
                                         startActivity(intent);
                                         finish();
                                     }

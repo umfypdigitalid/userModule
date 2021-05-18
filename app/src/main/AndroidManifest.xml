@@ -14,8 +14,36 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalID"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Verifying"></activity>
-        <activity android:name=".Camera" />
+        <activity
+            android:name=".ShowQr"
+            android:parentActivityName=".QrScanner"
+            android:label="Proof Your Identity">
+        </activity>
+        <activity
+            android:name=".QrScanner"
+            android:parentActivityName=".GiveAccess"
+            android:label="QR code Scanner"/>
+        <activity
+            android:name=".LogOut"
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
+        <activity
+            android:name=".GiveAccess"
+            android:label="@string/giveaccess"
+            android:parentActivityName=".HomePage" />
+        <activity
+            android:name=".PersonalData"
+            android:label="@string/yourinfo"
+            android:parentActivityName=".HomePage" />
+        <activity
+            android:name=".HomePage"
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
+        <activity
+            android:name=".Verifying"
+            android:label="@string/verifyaccount" />
+        <activity
+            android:name=".Camera"
+            android:label="@string/takeidphoto"
+            android:parentActivityName=".Login" />
         <activity
             android:name=".SignUp"
             android:theme="@style/Theme.Design.Light.NoActionBar" />

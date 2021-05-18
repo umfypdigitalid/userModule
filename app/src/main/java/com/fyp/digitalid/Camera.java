@@ -27,10 +27,13 @@ public class Camera extends AppCompatActivity {
 
     Uri image_uri;
 
+    //todo: store image
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imageView = findViewById(R.id.image_view);
         captureBtn = findViewById(R.id.capture_image_btn);
@@ -40,9 +43,12 @@ public class Camera extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignUp.class);
+                //todo: check whether ady snap ic or not
+                Intent intent = new Intent(Camera.this, SignUp.class);
                 startActivity(intent);
+/*
                 finish();
+*/
             }
         });
 
