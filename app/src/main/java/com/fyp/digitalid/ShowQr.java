@@ -33,7 +33,6 @@ public class ShowQr extends AppCompatActivity {
         //input = findViewById(R.id.input);
         //btngenerate = findViewById(R.id.btngenerate);
         output = findViewById(R.id.output);
-
         fullname="Loh Le Qing";
         ic="990915015426";
         QRdata = new StringBuilder().append(fullname).append("\n").append(ic).toString();
