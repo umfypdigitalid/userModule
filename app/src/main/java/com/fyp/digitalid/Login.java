@@ -69,6 +69,10 @@ public class Login extends AppCompatActivity {
                             String[] data = new String[2];
                             data[0] = username;
                             data[1] = password;
+                            /*String username = textInputEditTextUsername.getText().toString();
+                            Intent intent = new Intent(getApplicationContext(), HomePage.class);
+                            intent.putExtra("Username", username);
+                            startActivity(intent);*/
                             PutData putData = new PutData("http://192.168.0.198:8080/digitalid/login.php", "POST", field, data);
                             //192.168.0.198
                             if (putData.startPut()) {

@@ -10,7 +10,7 @@
     tools:context=".ShowQr"
     android:orientation="vertical">
 
-    <EditText
+    <!--<EditText
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="@string/generate"
         android:layout_marginTop="16dp"
-        />
+        />-->
 
     <ImageView
         android:layout_width="match_parent"
