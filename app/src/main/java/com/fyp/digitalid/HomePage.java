@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 public class HomePage extends AppCompatActivity {
 
-    TextView textViewLogOut;
+    TextView textViewLogOut, textViewUsername;
     Button btnPersonalData, btnGiveAccess;
-
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,9 @@ public class HomePage extends AppCompatActivity {
         textViewLogOut = findViewById(R.id.textViewLogout);
         btnPersonalData = findViewById(R.id.btnpersonaldata);
         btnGiveAccess = findViewById(R.id.btngiveaccess);
+        textViewUsername = findViewById(R.id.textViewUsername);
+        username = getIntent().getStringExtra("Username");
+        textViewUsername.setText(username);
 
         //todo : username get from db
         textViewLogOut.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +40,7 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomePage.this, PersonalData.class);
+                intent.putExtra("Username", username);
                 startActivity(intent);
 /*
                 finish();

@@ -34,4 +34,6 @@
     <string name="scanqr">Scan to Access</string>
     <string name="result">Result</string>
     <string name="generate">Generate</string>
+    <string name="ic_number">IC number</string>
+    <string name="name">Name</string>
 </resources>
