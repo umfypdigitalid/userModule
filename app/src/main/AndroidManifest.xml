@@ -32,8 +32,7 @@
             android:parentActivityName=".HomePage" />
         <activity
             android:name=".PersonalData"
-            android:label="@string/yourinfo"
-            android:parentActivityName=".HomePage" />
+            android:label="@string/yourinfo" />
         <activity
             android:name=".HomePage"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
@@ -46,7 +45,9 @@
             android:parentActivityName=".Login" />
         <activity
             android:name=".SignUp"
-            android:theme="@style/Theme.Design.Light.NoActionBar" />
+            android:label="Fill In Your Information"
+            android:parentActivityName=".Login"
+        />
         <activity
             android:name=".Login"
             android:theme="@style/Theme.Design.Light.NoActionBar">

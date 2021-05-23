@@ -3,8 +3,11 @@ package com.fyp.digitalid;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ import java.util.Map;
 public class PersonalData extends AppCompatActivity {
 
     TextView textView1, textView2, textView3, textView4;
+    Button btndone;
     private List<UserData> userDataList;
     String username ;
     private static final String showURL = "http://192.168.0.198:8080/digitalid/retrieveData.php";
@@ -49,7 +53,9 @@ public class PersonalData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        btndone = findViewById(R.id.btnDone);
+
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //listView=(ListView)findViewById(R.id.lview) ;
 
@@ -64,7 +70,20 @@ public class PersonalData extends AppCompatActivity {
 
         getData();
 
+        btndone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonalData.this, HomePage.class);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+/*
+                finish();
+*/
+            }
+        });
     }
+
+
 
     private void getData(){
 
@@ -132,14 +151,7 @@ public class PersonalData extends AppCompatActivity {
         textView3.setText(email);
         textView4.setText(address);
 
-
-
         //JSON
         //try {
-
-
-
-
-
     }
 }

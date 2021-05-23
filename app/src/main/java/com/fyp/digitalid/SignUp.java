@@ -18,7 +18,10 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class SignUp extends AppCompatActivity {
 
@@ -35,6 +38,7 @@ public class SignUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textInputEditTextFullname = findViewById(R.id.fullname);
         textInputEditTextUsername = findViewById(R.id.username);
@@ -88,8 +92,13 @@ public class SignUp extends AppCompatActivity {
                 password = String.valueOf(textInputEditTextPassword.getText());
                 email = String.valueOf(textInputEditTextEmail.getText());
                 ic = String.valueOf(textInputEditTextIc.getText());
-                birthdate = String.valueOf(textInputEditTextAddress.getText());
+                birthdate = String.valueOf(textInputEditTextBirthdate.getText());
                 address = String.valueOf(textInputEditTextAddress.getText());
+                /*try {
+                    Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(birthdate);
+                } catch (ParseException e) {
+                    Toast.makeText(getApplicationContext(), "Error converting date", Toast.LENGTH_SHORT).show();
+                }*/
 
                 if(!fullname.equals("")&&!username.equals("") &&!password.equals("")&&!email.equals("")&&!ic.equals("")&&!birthdate.equals("")&&!address.equals("")) {
                     progressBar.setVisibility(View.VISIBLE);

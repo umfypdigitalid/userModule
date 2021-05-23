@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -111,6 +112,7 @@ public class Camera extends AppCompatActivity {
     }
 
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //called when image was captured from camera
@@ -118,6 +120,8 @@ public class Camera extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             //set the image captured to our ImageView
             imageView.setImageURI(image_uri);
+            System.out.println("URI: "+image_uri);
+
         }
     }
 }

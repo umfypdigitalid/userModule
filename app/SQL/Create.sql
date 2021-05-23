@@ -4,7 +4,7 @@ CREATE TABLE `digitalid`.`userdata` (
     `username` VARCHAR(100) NOT NULL ,
     `password` TEXT NOT NULL ,
     `ic` VARCHAR(20) NOT NULL ,
-    `birthDate` DATE NOT NULL ,
+    `birthDate` VARCHAR(20) NOT NULL ,
     `email` TEXT NOT NULL ,
     `address` TEXT NOT NULL ,
     `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,

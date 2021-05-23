@@ -17,13 +17,17 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 public class ShowQr extends AppCompatActivity {
 
     //Button btngenerate;
     //EditText input;
     ImageView output;
-    String QRdata,fullname,ic;
-
+    String QRdata,fullname,ic, timestamp;
+    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +39,9 @@ public class ShowQr extends AppCompatActivity {
         output = findViewById(R.id.output);
         fullname="Loh Le Qing";
         ic="990915015426";
-        QRdata = new StringBuilder().append(fullname).append("\n").append(ic).toString();
+        Date date = new Date(System.currentTimeMillis());
+        timestamp=formatter.format(date);
+        QRdata = new StringBuilder().append(fullname).append("\n").append(ic).append("\n").append(timestamp).toString();
         System.out.println(QRdata);
         //String sText = input.getText().toString().trim();
         MultiFormatWriter writer = new MultiFormatWriter();
