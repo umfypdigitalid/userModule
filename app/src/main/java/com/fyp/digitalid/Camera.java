@@ -8,14 +8,20 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 
 public class Camera extends AppCompatActivity {
 
@@ -25,8 +31,8 @@ public class Camera extends AppCompatActivity {
     Button captureBtn;
     Button nextBtn;
     ImageView imageView;
-
     Uri image_uri;
+    String icimage;
 
     //todo: store image
 
@@ -44,12 +50,16 @@ public class Camera extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo: check whether ady snap ic or not
-                Intent intent = new Intent(Camera.this, SignUp.class);
-                startActivity(intent);
-/*
-                finish();
-*/
+                //todo: encode image to base64 and check null
+                if(icimage!=null) {
+                    Intent intent = new Intent(Camera.this, SignUp.class);
+                    intent.putExtra("icimage",icimage);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please snap picture of your identity card.", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -57,6 +67,7 @@ public class Camera extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //if system os is >= marshmallow, request runtime permission
+                //todo: choose from gallery
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     if (checkSelfPermission(Manifest.permission.CAMERA) ==
                             PackageManager.PERMISSION_DENIED ||
@@ -117,11 +128,22 @@ public class Camera extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //called when image was captured from camera
 
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && data!=null) {
             //set the image captured to our ImageView
             imageView.setImageURI(image_uri);
-            System.out.println("URI: "+image_uri);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),image_uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            //compress bitmap
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
 
+            byte[] bytes = stream.toByteArray();
+            // Get base64 encoded string
+            icimage = Base64.encodeToString(bytes,Base64.DEFAULT);
         }
     }
 }

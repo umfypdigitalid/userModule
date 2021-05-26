@@ -11,9 +11,9 @@ class DataBaseConfig
     {
 
         $this->servername = 'localhost';
-        $this->username = 'root';
-        $this->password = '';
-        $this->databasename = 'digitalid';
+        $this->username = 'id16886117_fypumdigitalid';
+        $this->password = 'xhmD3iN>#_9pp?cc';
+        $this->databasename = 'id16886117_umdigitalid';
 
     }
 }

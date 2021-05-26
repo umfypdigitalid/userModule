@@ -3,6 +3,7 @@ package com.fyp.digitalid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -26,16 +27,17 @@ public class ShowQr extends AppCompatActivity {
     //Button btngenerate;
     //EditText input;
     ImageView output;
-    String QRdata,fullname,ic, timestamp;
+    String QRdata,fullname,ic, timestamp,username;
     SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_qr);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //input = findViewById(R.id.input);
         //btngenerate = findViewById(R.id.btngenerate);
+        username = getIntent().getStringExtra("Username");
         output = findViewById(R.id.output);
         fullname="Loh Le Qing";
         ic="990915015426";
@@ -81,4 +83,13 @@ public class ShowQr extends AppCompatActivity {
             }
         });*/
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("Username", username);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+    //todo expire in 30 min
+    //https://wee.example.com/expire.php?code=abcd1234876ce067e
 }

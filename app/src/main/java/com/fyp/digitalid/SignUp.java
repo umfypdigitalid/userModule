@@ -4,9 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +22,8 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,9 +36,10 @@ public class SignUp extends AppCompatActivity {
     TextView textViewLogin;
     ProgressBar progressBar;
     DatePickerDialog picker;
-/*
-    DatePicker picker;
-*/
+    String icimage;
+
+    //Uri image_uri ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +57,8 @@ public class SignUp extends AppCompatActivity {
         buttonSignUp = findViewById(R.id.buttonSignUp);
         textViewLogin = findViewById(R.id.loginText);
         progressBar = findViewById(R.id.progress);
-//        picker=(DatePicker)findViewById(R.id.datePicker);
+        icimage = getIntent().getStringExtra("icimage");
+        System.out.println("Signup activity: "+icimage);
 
         textInputEditTextBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,8 +89,6 @@ public class SignUp extends AppCompatActivity {
         });
 
 
-
-
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,21 +100,15 @@ public class SignUp extends AppCompatActivity {
                 ic = String.valueOf(textInputEditTextIc.getText());
                 birthdate = String.valueOf(textInputEditTextBirthdate.getText());
                 address = String.valueOf(textInputEditTextAddress.getText());
-                /*try {
-                    Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(birthdate);
-                } catch (ParseException e) {
-                    Toast.makeText(getApplicationContext(), "Error converting date", Toast.LENGTH_SHORT).show();
-                }*/
 
-                if(!fullname.equals("")&&!username.equals("") &&!password.equals("")&&!email.equals("")&&!ic.equals("")&&!birthdate.equals("")&&!address.equals("")) {
+                if(!fullname.equals("")&&!username.equals("") &&!password.equals("")&&!email.equals("")&&!ic.equals("")&&!birthdate.equals("")&&!address.equals("")&&!icimage.equals("")) {
                     progressBar.setVisibility(View.VISIBLE);
-
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             //Creating array for parameters
-                            String[] field = new String[7];
+                            String[] field = new String[8];
                             field[0] = "fullname";
                             field[1] = "username";
                             field[2] = "password";
@@ -116,8 +116,9 @@ public class SignUp extends AppCompatActivity {
                             field[4] = "birthdate";
                             field[5] = "email";
                             field[6] = "address";
+                            field[7] = "icimage";
                             //Creating array for data
-                            String[] data = new String[7];
+                            String[] data = new String[8];
                             data[0] = fullname;
                             data[1] = username;
                             data[2] = password;
@@ -125,8 +126,10 @@ public class SignUp extends AppCompatActivity {
                             data[4] = birthdate;
                             data[5] = email;
                             data[6] = address;
+                            data[7] = icimage;
                             //192.168.0.198
                             PutData putData = new PutData("http://192.168.0.198:8080/digitalid/signup.php", "POST", field, data);
+                            //PutData putData = new PutData("https://digitalidum.000webhostapp.com/lq/signup.php", "POST", field, data);
                             if (putData.startPut()) {
                                 if (putData.onComplete()) {
                                     progressBar.setVisibility(View.GONE);

@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `icimage` LONGTEXT NOT NULL AFTER `address`;

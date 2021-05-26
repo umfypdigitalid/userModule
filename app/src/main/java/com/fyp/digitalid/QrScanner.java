@@ -29,25 +29,28 @@ public class QrScanner extends AppCompatActivity {
     CodeScanner qrscanner;
     CodeScannerView scannerView;
     TextView resultScan;
-    Button btnShowQr;
+    //Button btnShowQr;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scanner);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         scannerView = findViewById(R.id.qrscanner);
         qrscanner = new CodeScanner(this, scannerView);
-        btnShowQr = findViewById(R.id.btnshowqr);
+        //btnShowQr = findViewById(R.id.btnshowqr);
+        username = getIntent().getStringExtra("Username");
 
-        btnShowQr.setOnClickListener(new View.OnClickListener() {
+        /*btnShowQr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext() ,ShowQr.class);
+                Intent intent = new Intent(getApplicationContext() ,HomePage.class);
+                intent.putExtra("Username", username);
                 startActivity(intent);
             }
-        });
+        });*/
 
         //detected and decode
         qrscanner.setDecodeCallback(new DecodeCallback() {
@@ -68,6 +71,14 @@ public class QrScanner extends AppCompatActivity {
                 qrscanner.startPreview();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("Username", username);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override

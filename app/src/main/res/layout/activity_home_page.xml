@@ -48,27 +48,63 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="286dp"
         android:layout_height="224dp"
-        android:layout_marginTop="188dp"
+        android:layout_marginTop="170dp"
         android:background="@color/black"
         android:text="@string/personaldata"
-        app:layout_constraintBottom_toTopOf="@+id/btngiveaccess"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textViewUsername"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@id/textViewUsername" />
 
     <Button
+        android:id="@+id/btngiveaccess"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue_700"
+        android:text="Generate QR"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnscanqr"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnpersonaldata"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/btnscanqr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue_700"
+        android:text="Scan QR"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/btngiveaccess"
+        app:layout_constraintTop_toBottomOf="@id/btnpersonaldata"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <!--<Button
         android:id="@+id/btngiveaccess"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:backgroundTint="@color/blue_700"
-        android:text="@string/giveaccess"
+        android:text="Generate QR"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnscanqr"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnscanqr"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:backgroundTint="@color/blue_700"
+        android:text="Scan QR"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="493dp" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

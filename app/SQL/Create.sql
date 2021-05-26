@@ -7,6 +7,8 @@ CREATE TABLE `digitalid`.`userdata` (
     `birthDate` VARCHAR(20) NOT NULL ,
     `email` TEXT NOT NULL ,
     `address` TEXT NOT NULL ,
+    `icimage` LONGTEXT NOT NULL,
     `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+
     PRIMARY KEY (`userId`)
 ) ENGINE = InnoDB;

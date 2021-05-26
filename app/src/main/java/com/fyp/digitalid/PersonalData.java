@@ -37,8 +37,8 @@ import java.util.Map;
 
 public class PersonalData extends AppCompatActivity {
 
-    TextView textView1, textView2, textView3, textView4;
-    Button btndone;
+    TextView textView1, textView2, textView3, textView4, textView5;
+    //Button btndone;
     private List<UserData> userDataList;
     String username ;
     private static final String showURL = "http://192.168.0.198:8080/digitalid/retrieveData.php";
@@ -53,7 +53,7 @@ public class PersonalData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data);
 
-        btndone = findViewById(R.id.btnDone);
+        //btndone = findViewById(R.id.btnDone);
 
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -65,24 +65,31 @@ public class PersonalData extends AppCompatActivity {
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
         textView1 = findViewById(R.id.textViewFullName);
         textView2 = findViewById(R.id.textViewIC);
-        textView3 = findViewById(R.id.textViewEmail);
-        textView4 = findViewById(R.id.textViewAddress);
+        textView3 = findViewById(R.id.textViewBd);
+        textView4 = findViewById(R.id.textViewEmail);
+        textView5 = findViewById(R.id.textViewAddress);
 
         getData();
 
-        btndone.setOnClickListener(new View.OnClickListener() {
+        /*btndone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PersonalData.this, HomePage.class);
                 intent.putExtra("Username", username);
                 startActivity(intent);
-/*
+*//*
                 finish();
-*/
+*//*
             }
-        });
+        });*/
     }
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("Username", username);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
 
     private void getData(){
@@ -144,12 +151,14 @@ public class PersonalData extends AppCompatActivity {
 
         String fullName = x[0];
         String ic =x[1];
-        String email =x[2];
-        String address =x[3];
+        String bd = x[2];
+        String email =x[3];
+        String address =x[4];
         textView1.setText(fullName);
         textView2.setText(ic);
-        textView3.setText(email);
-        textView4.setText(address);
+        textView3.setText(bd);
+        textView4.setText(email);
+        textView5.setText(address);
 
         //JSON
         //try {

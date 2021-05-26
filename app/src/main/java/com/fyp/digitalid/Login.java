@@ -73,6 +73,7 @@ public class Login extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), HomePage.class);
                             intent.putExtra("Username", username);
                             startActivity(intent);*/
+                            //PutData putData = new PutData("https://digitalidum.000webhostapp.com/lq/login.php", "POST", field, data);
                             PutData putData = new PutData("http://192.168.0.198:8080/digitalid/login.php", "POST", field, data);
                             //192.168.0.198
                             if (putData.startPut()) {
