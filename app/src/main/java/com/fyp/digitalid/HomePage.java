@@ -44,19 +44,17 @@ public class HomePage extends AppCompatActivity {
                 Intent intent = new Intent(HomePage.this, PersonalData.class);
                 intent.putExtra("Username", username);
                 startActivity(intent);
-/*
-                finish();
-*/
+
             }
         });
 
         btnGenerateQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getApplicationContext(), GiveAccess.class),999);
-                /*Intent intent = new Intent(getApplicationContext(), GiveAccess.class);
+                Intent intent = new Intent(getApplicationContext(), GiveAccess.class);
+                startActivityForResult(intent,999);
                 intent.putExtra("Username", username);
-                startActivity(intent);*/
+                startActivity(intent);
 /*
                 finish();
 */

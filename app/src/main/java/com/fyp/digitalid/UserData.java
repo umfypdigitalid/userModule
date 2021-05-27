@@ -1,18 +1,17 @@
 package com.fyp.digitalid;
 
-import java.util.Date;
 
 public class UserData {
 
-    private String fullName, ic, email, address;
-    //private String fullName, ic, birthDate, email, address;
+    //private String fullName, ic, email, address;
+    private String fullName, ic, birthDate, email, address;
 
 
-    public UserData (String fullName, String ic, String email, String address){
+    public UserData (String fullName, String ic, String birthDate, String email, String address){
 
         this.fullName = fullName;
         this.ic = ic;
-        //this.birthDate = birthDate;
+        this.birthDate = birthDate;
         this.email = email;
         this.address = address;
     }
@@ -33,13 +32,13 @@ public class UserData {
         this.ic = ic;
     }
 
-    /*public String getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
     public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
-    }*/
+    }
 
     public String getEmail() {
         return email;

@@ -1,49 +1,25 @@
 package com.fyp.digitalid;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PersonalData extends AppCompatActivity {
 
     TextView textView1, textView2, textView3, textView4, textView5;
-    //Button btndone;
-    private List<UserData> userDataList;
+    //private List<UserData> userDataList;
     String username ;
-    private static final String showURL = "http://192.168.0.198:8080/digitalid/retrieveData.php";
-    String name;
-    //ListView listView;
     BufferedInputStream is;
     String line = null;
     String result = null;
@@ -53,15 +29,6 @@ public class PersonalData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data);
 
-        //btndone = findViewById(R.id.btnDone);
-
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        //listView=(ListView)findViewById(R.id.lview) ;
-
-        //todo: show personal data get from db
-        username = getIntent().getStringExtra("Username");
-        /*userDataList = new ArrayList<>();*/
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
         textView1 = findViewById(R.id.textViewFullName);
         textView2 = findViewById(R.id.textViewIC);
@@ -71,17 +38,6 @@ public class PersonalData extends AppCompatActivity {
 
         getData();
 
-        /*btndone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PersonalData.this, HomePage.class);
-                intent.putExtra("Username", username);
-                startActivity(intent);
-*//*
-                finish();
-*//*
-            }
-        });*/
     }
     @Override
     public void onBackPressed() {
@@ -94,33 +50,12 @@ public class PersonalData extends AppCompatActivity {
 
     private void getData(){
 
-        /*StringRequest stringRequest = new StringRequest(Request.Method.POST, showURL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(PersonalData.this,response.trim(),Toast.LENGTH_LONG).show();
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PersonalData.this,error.toString(),Toast.LENGTH_LONG).show();
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("username",username);
-
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(PersonalData.this);
-        requestQueue.add(stringRequest);*/
-
         //connection
+        username = getIntent().getStringExtra("Username");
+        System.out.println("Username: "+username);
+        String showURL = "http://192.168.0.198:8080/digitalid/retrieveData.php?username="+username;
         try{
+
             URL url = new URL(showURL);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setRequestMethod("GET");
@@ -142,8 +77,7 @@ public class PersonalData extends AppCompatActivity {
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        //name=result;
-        //textView1.setText(result);
+
         System.out.println("Result: "+result);
 
         String []x = result.split("!");
@@ -160,7 +94,5 @@ public class PersonalData extends AppCompatActivity {
         textView4.setText(email);
         textView5.setText(address);
 
-        //JSON
-        //try {
     }
 }
