@@ -215,10 +215,10 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/poppinsmedium"
             android:text="@string/loginhere"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonSignUp"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/buttonSignUp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

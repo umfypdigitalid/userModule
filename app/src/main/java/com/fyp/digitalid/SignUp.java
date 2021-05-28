@@ -4,9 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,10 +19,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
 
@@ -28,8 +43,10 @@ public class SignUp extends AppCompatActivity {
     ProgressBar progressBar;
     DatePickerDialog picker;
     String icimage;
-
-    //Uri image_uri ;
+    String fullname, username, password, email, ic, birthdate, address;
+    private String URL = "http://192.168.0.198:8080/digitalid/signup2.php";
+   /* Uri image_uri ;
+    byte[] bytes;*/
 
 
     @Override
@@ -37,7 +54,6 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         textInputEditTextFullname = findViewById(R.id.fullname);
         textInputEditTextUsername = findViewById(R.id.username);
         textInputEditTextPassword = findViewById(R.id.password);
@@ -48,8 +64,68 @@ public class SignUp extends AppCompatActivity {
         buttonSignUp = findViewById(R.id.buttonSignUp);
         textViewLogin = findViewById(R.id.loginText);
         progressBar = findViewById(R.id.progress);
-        icimage = getIntent().getStringExtra("icimage");
+        //image_uri=getIntent().getData();
+        //convertbase64();
+        //icimage = Base64.encodeToString(bytes, Base64.DEFAULT);
+        //icimage = getIntent().getStringExtra("icimage");
+        fullname = username = password = email = ic = birthdate = address ="";
         System.out.println("Signup activity: "+icimage);
+
+        buttonSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fullname = String.valueOf(textInputEditTextFullname.getText());
+                username = String.valueOf(textInputEditTextUsername.getText());
+                password = String.valueOf(textInputEditTextPassword.getText());
+               /* if(!password.equals(reenterPassword)){
+                    //toast
+                }*/
+                email = String.valueOf(textInputEditTextEmail.getText());
+                ic = String.valueOf(textInputEditTextIc.getText());
+                birthdate = String.valueOf(textInputEditTextBirthdate.getText());
+                address = String.valueOf(textInputEditTextAddress.getText());
+
+                if(!fullname.equals("")&&!username.equals("") &&!password.equals("")&&!email.equals("")&&!ic.equals("")&&!birthdate.equals("")&&!address.equals("")) {
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            if (response.equals("Sign Up Success")) {
+                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                                buttonSignUp.setClickable(false);
+                                Intent intent = new Intent(getApplicationContext(), Login.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                        }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> data = new HashMap<>();
+                            data.put("fullname",fullname);
+                            data.put("username",username);
+                            data.put("password",password);
+                            data.put("ic",ic);
+                            data.put("birthdate",birthdate);
+                            data.put("email",email);
+                            data.put("address",address);
+                            //data.put("icimage",icimage);
+                            return data;
+                        }
+                    };
+                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                    requestQueue.add(stringRequest);
+                }else{
+                    Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         textInputEditTextBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +156,7 @@ public class SignUp extends AppCompatActivity {
         });
 
 
-        buttonSignUp.setOnClickListener(new View.OnClickListener() {
+       /* buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String fullname, username, password, email, ic, birthdate, address;
@@ -144,8 +220,9 @@ public class SignUp extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
 
     }
+
 }

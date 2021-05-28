@@ -33,6 +33,7 @@ public class Camera extends AppCompatActivity {
     ImageView imageView;
     Uri image_uri;
     String icimage;
+    byte[] bytes;
 
     //todo: store image
 
@@ -41,7 +42,7 @@ public class Camera extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        System.out.println("Test");
         imageView = findViewById(R.id.image_view);
         captureBtn = findViewById(R.id.capture_image_btn);
         nextBtn = findViewById(R.id.buttonNext);
@@ -51,9 +52,12 @@ public class Camera extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //todo: encode image to base64 and check null
-                if(icimage!=null) {
-                    Intent intent = new Intent(Camera.this, SignUp.class);
-                    intent.putExtra("icimage",icimage);
+                System.out.println("bytes: "+image_uri);
+                if(image_uri!=null) {
+                    Intent intent = new Intent(Camera.this, Verifying.class);
+                    intent.setData(image_uri);
+                    //intent.putExtra("uri",image_uri);
+                    System.out.println("put extra");
                     startActivity(intent);
                 }
                 else{
@@ -96,6 +100,7 @@ public class Camera extends AppCompatActivity {
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
         image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        System.out.println("open camera: "+image_uri);
         //Camera intent
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
@@ -123,27 +128,46 @@ public class Camera extends AppCompatActivity {
     }
 
 
-    @SuppressLint("MissingSuperCall")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //called when image was captured from camera
-
-        if (resultCode == RESULT_OK && data!=null) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("on activity result");
+        System.out.println("Result code: " + resultCode);
+        if (resultCode == RESULT_OK) {
             //set the image captured to our ImageView
+
             imageView.setImageURI(image_uri);
-            Bitmap bitmap = null;
+            /*Bitmap bitmap = null;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),image_uri);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), image_uri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             //compress bitmap
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
-
-            byte[] bytes = stream.toByteArray();
+            System.out.println("before compress");
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            System.out.println("After compress");
+             bytes = stream.toByteArray();
             // Get base64 encoded string
-            icimage = Base64.encodeToString(bytes,Base64.DEFAULT);
+            icimage = Base64.encodeToString(bytes, Base64.DEFAULT);*/
         }
+    }
+    protected void convertbase64(){
+        Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), image_uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //compress bitmap
+        System.out.println("before compress");
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        System.out.println("After compress");
+        bytes = stream.toByteArray();
+        // Get base64 encoded string
+        icimage = Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 }
