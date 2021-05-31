@@ -12,18 +12,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 public class Verifying extends AppCompatActivity {
-    Button buttonLogin;
+    Button buttonDone;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verifying);
-        buttonLogin = findViewById(R.id.backtologin);
+        buttonDone = findViewById(R.id.btndone);
+        username = getIntent().getStringExtra("Username");
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
+        buttonDone.setOnClickListener(new View.OnClickListener() {
                 @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Login.class);
+                Intent intent = new Intent(getApplicationContext(), HomePage.class);
+                intent.putExtra("Username",username);
                 startActivity(intent);
                 finish();
             }

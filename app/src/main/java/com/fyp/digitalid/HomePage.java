@@ -14,6 +14,10 @@ public class HomePage extends AppCompatActivity {
     TextView textViewLogOut, textViewUsername;
     Button btnPersonalData, btnGenerateQR, btnScanQR;
     String username;
+    String userstatus;
+    String verified = "verified";
+    String unverified = "unverified";
+    String verifying = "verifying";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +31,8 @@ public class HomePage extends AppCompatActivity {
         textViewUsername = findViewById(R.id.textViewUsername);
         username = getIntent().getStringExtra("Username");
         textViewUsername.setText(username);
+        userstatus = verified;
 
-        //todo : username get from db
         textViewLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,33 +45,43 @@ public class HomePage extends AppCompatActivity {
         btnPersonalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomePage.this, PersonalData.class);
-                intent.putExtra("Username", username);
-                startActivity(intent);
-
+                    Intent intent = new Intent(HomePage.this, PersonalData.class);
+                    intent.putExtra("Username", username);
+                    startActivity(intent);
             }
         });
+
 
         btnGenerateQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), GiveAccess.class);
-                startActivityForResult(intent,999);
-                intent.putExtra("Username", username);
-                startActivity(intent);
-/*
-                finish();
-*/
+                if(userstatus==verified) {
+                    Intent intent = new Intent(getApplicationContext(), GiveAccess.class);
+                    intent.putExtra("Username", username);
+                    startActivityForResult(intent,999);
+                    //startActivity(intent);
+                } if(userstatus==unverified){
+                    unverified();
+                }if(userstatus==verifying){
+                    verifying();
+                }
+
             }
         });
 
         btnScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getApplicationContext(), QrScanner.class),999);
-                /*Intent intent = new Intent(getApplicationContext(), QrScanner.class);
-                intent.putExtra("Username", username);
-                startActivity(intent);*/
+                if(userstatus==verified) {
+                    startActivityForResult(new Intent(getApplicationContext(), QrScanner.class),999);
+                    /*Intent intent = new Intent(getApplicationContext(), QrScanner.class);
+                    intent.putExtra("Username", username);
+                    startActivity(intent);*/
+                } if(userstatus==unverified){
+                    unverified();
+                } if(userstatus==verifying){
+                    verifying();
+                }
             }
         });
 
@@ -80,5 +94,17 @@ public class HomePage extends AppCompatActivity {
         if (requestCode == 999 && resultCode == RESULT_OK) {
             username = data.getStringExtra("Username");
         }
+    }
+
+    protected void unverified(){
+        Intent intent = new Intent(HomePage.this, VerifyAccount.class);
+        intent.putExtra("Username", username);
+        startActivity(intent);
+    }
+
+    protected void verifying(){
+        Intent intent = new Intent(HomePage.this, Verifying.class);
+        intent.putExtra("Username", username);
+        startActivity(intent);
     }
 }

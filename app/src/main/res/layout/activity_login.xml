@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Login">
+
+    <ImageView
+        android:src="@drawable/digitalid"
+        android:alpha="0.58"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/textView"
@@ -13,8 +21,8 @@
         android:layout_marginTop="124dp"
         android:fontFamily="@font/poppinsbold"
         android:gravity="center"
-        android:text="@string/welcome"
-        android:textColor="@color/blue_700"
+        android:text="WELCOME"
+        android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -37,6 +45,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:hint="@string/username"
+            app:hintTextColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,9 +55,10 @@
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_user"
+                android:textColor="@color/black"
                 android:fontFamily="@font/poppinsmedium"
-                tools:targetApi="jelly_bean" />
+                android:drawableEnd="@drawable/ic_user"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -58,6 +68,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
+            app:hintTextColor="@color/black"
             android:hint="@string/password"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUsername"
             tools:layout_editor_absoluteX="0dp">
@@ -66,10 +77,11 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:drawableEnd="@drawable/ic_password"
                 android:fontFamily="@font/poppinsmedium"
                 android:inputType="textPassword"
-                tools:targetApi="jelly_bean" />
+                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ProgressBar
@@ -101,6 +113,8 @@
             android:layout_marginTop="40dp"
             android:fontFamily="@font/poppinsmedium"
             android:text="@string/signuphere"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/buttonLogin"

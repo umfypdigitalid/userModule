@@ -4,8 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_500"
     tools:context=".LogOut">
+
+    <ImageView
+        android:src="@drawable/digitalid"
+        android:alpha="0.58"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/logoutsuccess"
@@ -13,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="180dp"
         android:fontFamily="@font/poppinsmedium"
+        android:textColor="@color/black"
         android:text="@string/logoutsuccess"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,6 +33,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:drawableTop="@drawable/ic_logout"
+        android:drawableTint="@color/black"
+        android:textColor="@color/black"
         android:fontFamily="@font/poppinsmedium"
         android:text="@string/login"
         android:textSize="18dp"

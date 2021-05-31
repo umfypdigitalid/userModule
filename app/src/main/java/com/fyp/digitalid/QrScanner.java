@@ -40,6 +40,7 @@ public class QrScanner extends AppCompatActivity {
 
         scannerView = findViewById(R.id.qrscanner);
         qrscanner = new CodeScanner(this, scannerView);
+        resultScan = findViewById(R.id.scanresult);
         //btnShowQr = findViewById(R.id.btnshowqr);
         username = getIntent().getStringExtra("Username");
 
@@ -59,6 +60,7 @@ public class QrScanner extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        System.out.println("qrresult: "+result.getText());
                         resultScan.setText(result.getText());
                     }
                 });

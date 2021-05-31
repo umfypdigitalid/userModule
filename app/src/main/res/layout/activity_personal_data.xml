@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".PersonalData">
 
-
     <TextView
         android:id="@+id/textName"
         android:layout_width="wrap_content"
@@ -14,6 +13,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="128dp"
         android:text="Name: "
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
         android:text="@string/name"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.327"
         app:layout_constraintStart_toEndOf="@+id/textName"
@@ -35,6 +36,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="52dp"
         android:text="IC Number: "
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textName" />
 
@@ -44,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:text="@string/ic_number"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.258"
         app:layout_constraintStart_toEndOf="@+id/textIcNumber"
@@ -57,6 +60,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="52dp"
         android:text="Date of Birth: "
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textIcNumber" />
 
@@ -66,6 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:text="Birthdate"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.32"
         app:layout_constraintStart_toEndOf="@+id/textBd"
@@ -78,6 +83,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="52dp"
         android:text="Email: "
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textBd"
         app:layout_constraintVertical_bias="0.018" />
@@ -88,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:text="Email"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.561"
         app:layout_constraintStart_toEndOf="@+id/textEmail"
@@ -101,6 +108,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="52dp"
         android:text="Address: "
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textEmail"
@@ -111,8 +119,9 @@
         android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="60dp"
         android:text="@string/address"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textAddress"
         app:layout_constraintTop_toBottomOf="@+id/textViewEmail"

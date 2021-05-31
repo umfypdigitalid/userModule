@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/output"
-        android:scaleType="fitCenter"
+        android:scaleType="center"
         android:adjustViewBounds="true"/>
 
 </LinearLayout>

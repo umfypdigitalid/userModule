@@ -12,15 +12,30 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.vishnusivadas.advanced_httpurlconnection.PutData;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Camera extends AppCompatActivity {
@@ -32,8 +47,9 @@ public class Camera extends AppCompatActivity {
     Button nextBtn;
     ImageView imageView;
     Uri image_uri;
-    String icimage;
+    String icimage,username;
     byte[] bytes;
+    private String URL= "http://192.168.0.198:8080/digitalid/updateIcImage.php";
 
     //todo: store image
 
@@ -46,14 +62,106 @@ public class Camera extends AppCompatActivity {
         imageView = findViewById(R.id.image_view);
         captureBtn = findViewById(R.id.capture_image_btn);
         nextBtn = findViewById(R.id.buttonNext);
+        username = getIntent().getStringExtra("Username");
+        System.out.println("camera username: "+username);
+
+
 
         //button click
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo: encode image to base64 and check null
+                if(!icimage.equals("")&&!username.equals("") ) {
+                    //progressBar.setVisibility(View.VISIBLE);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Thread thread = new Thread() {
+                                public void run() {
+                                    //Creating array for parameters
+                                    String[] field = new String[2];
+                                    field[0] = "username";
+                                    field[1] = "icimage";
+                                    //Creating array for data
+                                    String[] data = new String[2];
+                                    data[0] = username;
+                                    data[1] = icimage;
+                                    System.out.println("Username: "+username+"\nIcimage: "+icimage);
+                                    //192.168.0.198
+                                    PutData putData = new PutData(URL, "POST", field, data);
+                                    //PutData putData = new PutData("https://digitalidum.000webhostapp.com/lq/signup.php", "POST", field, data);
+                                    if (putData.startPut()) {
+                                        if (putData.onComplete()) {
+                                            //progressBar.setVisibility(View.GONE);
+                                            String result = putData.getResult();
+                                            if (result.equals("Success")) {
+                                                //Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(getApplicationContext(), Verifying.class);
+                                                intent.putExtra("Username", username);
+                                                startActivity(intent);
+                                                finish();
+                                            } else {
+                                                //Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                                            }
+                                            Log.i("PutData", result);
+                                        }
+                                    }
+                                }
+
+                            };
+                            thread.start();
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please snap picture of your identity card", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+               /* if(icimage!=null) {
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            System.out.println("response: "+response);
+                            if (response.equals("Success")) {
+                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), Verifying.class);
+                                intent.putExtra("Username", username);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                        }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> data = new HashMap<>();
+                            //data.put("username",username);
+                            data.put("icimage",icimage);
+                            return data;
+                        }
+                    };
+                    //stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, -1, 0));
+                    stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 48,
+                            0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                    requestQueue.add(stringRequest);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Please snap picture of your identity card.", Toast.LENGTH_SHORT).show();
+                }*/
+
+                /*
                 System.out.println("bytes: "+image_uri);
                 if(image_uri!=null) {
+                    //update userstatus to verifying
                     Intent intent = new Intent(Camera.this, Verifying.class);
                     intent.setData(image_uri);
                     //intent.putExtra("uri",image_uri);
@@ -63,9 +171,9 @@ public class Camera extends AppCompatActivity {
                 else{
                     Toast.makeText(getApplicationContext(), "Please snap picture of your identity card.", Toast.LENGTH_SHORT).show();
                 }
-
             }
-        });
+        });*/
+
 
         captureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +208,6 @@ public class Camera extends AppCompatActivity {
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
         image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        System.out.println("open camera: "+image_uri);
         //Camera intent
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
@@ -135,23 +242,24 @@ public class Camera extends AppCompatActivity {
         System.out.println("on activity result");
         System.out.println("Result code: " + resultCode);
         if (resultCode == RESULT_OK) {
-            //set the image captured to our ImageView
-
             imageView.setImageURI(image_uri);
-            /*Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), image_uri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            //compress bitmap
-            System.out.println("before compress");
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            System.out.println("After compress");
-             bytes = stream.toByteArray();
-            // Get base64 encoded string
-            icimage = Base64.encodeToString(bytes, Base64.DEFAULT);*/
+            Thread thread = new Thread() {
+                public void run() {
+                    System.out.println("Thread Running");
+                    //set the image captured to our ImageView
+                    convertbase64();
+                }
+            };
+            thread.start();
+            /*new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //set the image captured to our ImageView
+                    imageView.setImageURI(image_uri);
+                    convertbase64();
+                }
+            }).start();*/
+
         }
     }
     protected void convertbase64(){
@@ -169,5 +277,6 @@ public class Camera extends AppCompatActivity {
         bytes = stream.toByteArray();
         // Get base64 encoded string
         icimage = Base64.encodeToString(bytes, Base64.DEFAULT);
+        System.out.println("Done convert to base64");
     }
 }
