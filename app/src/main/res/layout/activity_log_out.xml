@@ -8,7 +8,7 @@
 
     <ImageView
         android:src="@drawable/digitalid"
-        android:alpha="0.58"
+        android:alpha="0.50"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

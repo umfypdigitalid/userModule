@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class PersonalData extends AppCompatActivity {
 
-    TextView textView1, textView2, textView3, textView4, textView5;
+    TextView textView1, textView2, textView3, textView4, textView5, textViewUserStatus;
     //private List<UserData> userDataList;
     String username ;
     BufferedInputStream is;
@@ -35,6 +35,7 @@ public class PersonalData extends AppCompatActivity {
         textView3 = findViewById(R.id.textViewBd);
         textView4 = findViewById(R.id.textViewEmail);
         textView5 = findViewById(R.id.textViewAddress);
+        textViewUserStatus = findViewById(R.id.tvuserstatus);
 
         getData();
 
@@ -88,11 +89,13 @@ public class PersonalData extends AppCompatActivity {
         String bd = x[2];
         String email =x[3];
         String address =x[4];
+        String userstatus =x[5];
         textView1.setText(fullName);
         textView2.setText(ic);
         textView3.setText(bd);
         textView4.setText(email);
         textView5.setText(address);
+        textViewUserStatus.setText(userstatus);
 
     }
 }

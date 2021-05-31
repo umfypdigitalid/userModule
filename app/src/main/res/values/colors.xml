@@ -13,5 +13,6 @@
     <color name="green">#2CF347</color>
     <color name="colorAccent">#90EE90</color>
     <color name="black_80">#60000000</color>
+    <color name="blue_300">#4CC3F4</color>
     <color name="blue_50">#ABE0F6</color>
 </resources>

@@ -10,18 +10,21 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="Digital ID"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalID"
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".VerifyAccount"
-            android:label="Verify Your Account"
+            android:name=".ContactUs"
+            android:label=" "
             />
+        <activity
+            android:name=".VerifyAccount"
+            android:label="Verify Your Account" />
         <activity
             android:name=".ShowQr"
             android:label="Proof Your Identity" />
@@ -57,6 +60,7 @@
             android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

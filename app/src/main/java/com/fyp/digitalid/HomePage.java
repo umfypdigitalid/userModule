@@ -9,15 +9,25 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Arrays;
+
 public class HomePage extends AppCompatActivity {
 
-    TextView textViewLogOut, textViewUsername;
+    TextView textViewLogOut, textViewUsername, textViewContactUs;
     Button btnPersonalData, btnGenerateQR, btnScanQR;
     String username;
     String userstatus;
     String verified = "verified";
     String unverified = "unverified";
     String verifying = "verifying";
+    BufferedInputStream is;
+    String line = null;
+    String result = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +41,44 @@ public class HomePage extends AppCompatActivity {
         textViewUsername = findViewById(R.id.textViewUsername);
         username = getIntent().getStringExtra("Username");
         textViewUsername.setText(username);
-        userstatus = verified;
+        textViewContactUs = findViewById(R.id.tvphone);
+        String showURL = "http://192.168.0.198:8080/digitalid/homepage.php?username="+username;
+        try{
+
+            URL url = new URL(showURL);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("GET");
+            is = new BufferedInputStream(con.getInputStream());
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        //content
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            StringBuilder sb = new StringBuilder();
+            while((line=br.readLine())!=null){
+                sb.append(line+"\n");
+            }
+            is.close();
+            result = sb.toString();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        System.out.println("Result: "+result);
+        userstatus =result;
+        //userstatus = verified;
+
+        textViewContactUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ContactUs.class);
+                intent.putExtra("Username", username);
+                startActivityForResult(intent,999);
+            }
+        });
 
         textViewLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
