@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class Verifying extends AppCompatActivity {
+public class Verifying extends BaseActivity {
     Button buttonDone;
     String username;
 

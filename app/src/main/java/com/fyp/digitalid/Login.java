@@ -25,6 +25,8 @@ import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Login extends AppCompatActivity {
 
@@ -34,6 +36,8 @@ public class Login extends AppCompatActivity {
     ProgressBar progressBar;
     private String username, password;
     private String URL = "http://192.168.0.198:8080/digitalid/login.php";
+    private Timer timer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,4 +161,36 @@ public class Login extends AppCompatActivity {
             }
         });*/
         }
+   /* @Override
+    protected void onPause() {
+        super.onPause();
+
+        timer = new Timer();
+        Log.i("HomePage", "Invoking logout timer");
+        LogOutTimerTask logoutTimeTask = new LogOutTimerTask();
+        timer.schedule(logoutTimeTask, 5000); //(300000) auto logout in 5 minutes
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (timer != null) {
+            timer.cancel();
+            Log.i("HomePage", "cancel timer");
+            timer = null;
+        }
+    }
+
+    private class LogOutTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+
+            //redirect user to login screen
+            Intent i = new Intent(Login.this, LogOut.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        }
+    }*/
+}

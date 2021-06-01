@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class VerifyAccount extends AppCompatActivity {
+public class VerifyAccount extends BaseActivity {
 
     Button btnveriftnow, btncancel;
     String username;

@@ -15,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 
-public class PersonalData extends AppCompatActivity {
+public class PersonalData extends BaseActivity {
 
     TextView textView1, textView2, textView3, textView4, textView5, textViewUserStatus;
     //private List<UserData> userDataList;
@@ -28,6 +28,7 @@ public class PersonalData extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data);
+        //getSupportActionBar().setTitle("Personal Data");
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
         textView1 = findViewById(R.id.textViewFullName);

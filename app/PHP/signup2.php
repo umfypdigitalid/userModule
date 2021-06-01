@@ -11,9 +11,15 @@ if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['usernam
 	$birthdate = $_POST['birthdate'];
 	$address = $_POST['address'];
 	//$icimage = $_POST['icimage'];
-	$sql = "insert into users (fullname, username, password, ic, birthdate, email, address) VALUES ('" . $fullname . "','" . $username . "','" . $password . "','" . $ic . "','" . $birthdate . "','" . $email . "','" . $address . "')";
-	if(!$conn->query($sql)){
-		echo "Sign Up Failed";
-	}else echo "Sign Up Success";
+	$sql = "select * from users where username ='$username' or ic='$ic'";
+    $sql2 = "insert into users (fullname, username, password, ic, birthdate, email, address) VALUES ('" . $fullname . "','" . $username . "','" . $password . "','" . $ic . "','" . $birthdate . "','" . $email . "','" . $address . "')";
+    $result = $conn->query($sql);
+    if($result->num_rows>0){
+        echo "Username or IC already exists.";
+    }else {
+        if (!$conn->query($sql2)) {
+            echo "Sign Up Failed";
+        } else echo "Sign Up Success";
+    }
 }else echo "All fields are required";
 ?>

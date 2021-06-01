@@ -16,7 +16,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
-public class ShowQr extends AppCompatActivity {
+public class ShowQr extends BaseActivity {
 
     ImageView output;
     String QRdata, timestamp,username;

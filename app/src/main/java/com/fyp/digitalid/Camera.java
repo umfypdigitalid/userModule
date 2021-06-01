@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class Camera extends AppCompatActivity {
+public class Camera extends BaseActivity {
 
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;

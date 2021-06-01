@@ -16,7 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 
-public class GiveAccess extends AppCompatActivity {
+public class GiveAccess extends BaseActivity {
 
     Button btnShowQr;
     CheckBox cbname,cbic,cbbirthdate,cbemail,cbaddress;

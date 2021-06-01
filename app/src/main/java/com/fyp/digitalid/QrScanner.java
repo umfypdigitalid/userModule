@@ -24,7 +24,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.Scanner;
 
-public class QrScanner extends AppCompatActivity {
+public class QrScanner extends BaseActivity {
 
     CodeScanner qrscanner;
     CodeScannerView scannerView;
@@ -84,7 +84,7 @@ public class QrScanner extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         requestForCamera();
     }

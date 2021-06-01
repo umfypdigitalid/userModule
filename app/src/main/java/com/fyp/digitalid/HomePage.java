@@ -5,9 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -15,19 +23,24 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class HomePage extends AppCompatActivity {
+public class HomePage extends BaseActivity {
 
     TextView textViewLogOut, textViewUsername, textViewContactUs;
     Button btnPersonalData, btnGenerateQR, btnScanQR;
     String username;
     String userstatus;
-    String verified = "verified";
-    String unverified = "unverified";
-    String verifying = "verifying";
+    String verified = "VERIFIED";
+    String unverified = "UNVERIFIED";
+    String verifying = "VERIFYING";
     BufferedInputStream is;
     String line = null;
     String result = null;
+
+    //private Timer timer;
+    //private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,34 +55,10 @@ public class HomePage extends AppCompatActivity {
         username = getIntent().getStringExtra("Username");
         textViewUsername.setText(username);
         textViewContactUs = findViewById(R.id.tvphone);
-        String showURL = "http://192.168.0.198:8080/digitalid/homepage.php?username="+username;
-        try{
 
-            URL url = new URL(showURL);
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setRequestMethod("GET");
-            is = new BufferedInputStream(con.getInputStream());
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        //content
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-            while((line=br.readLine())!=null){
-                sb.append(line+"\n");
-            }
-            is.close();
-            result = sb.toString();
-
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        System.out.println("Result: "+result);
-        userstatus =result;
-        //userstatus = verified;
+        //userstatus=verified;
+        //getUserStatus();
+        getStatus();
 
         textViewContactUs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +84,7 @@ public class HomePage extends AppCompatActivity {
                     Intent intent = new Intent(HomePage.this, PersonalData.class);
                     intent.putExtra("Username", username);
                     startActivity(intent);
+                    //finish();
             }
         });
 
@@ -102,7 +92,7 @@ public class HomePage extends AppCompatActivity {
         btnGenerateQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userstatus==verified) {
+                if(userstatus.equals(verified)) {
                     Intent intent = new Intent(getApplicationContext(), GiveAccess.class);
                     intent.putExtra("Username", username);
                     startActivityForResult(intent,999);
@@ -119,8 +109,11 @@ public class HomePage extends AppCompatActivity {
         btnScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userstatus==verified) {
-                    startActivityForResult(new Intent(getApplicationContext(), QrScanner.class),999);
+                System.out.println("userstatus scanqr: "+userstatus);
+                if(userstatus.equals(verified)) {
+                    Intent intent = new Intent(getApplicationContext(), QrScanner.class);
+                    intent.putExtra("Username", username);
+                    startActivityForResult(intent,999);
                     /*Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
                     startActivity(intent);*/
@@ -153,5 +146,55 @@ public class HomePage extends AppCompatActivity {
         Intent intent = new Intent(HomePage.this, Verifying.class);
         intent.putExtra("Username", username);
         startActivity(intent);
+    }
+
+
+    protected void getUserStatus(){
+        String showURL = "http://192.168.0.198:8080/digitalid/homepage.php?username="+username;
+        try{
+
+            URL url = new URL(showURL);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setRequestMethod("GET");
+            is = new BufferedInputStream(con.getInputStream());
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        //content
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            StringBuilder sb = new StringBuilder();
+            while((line=br.readLine())!=null){
+                sb.append(line+"\n");
+            }
+            is.close();
+            result = sb.toString();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        System.out.println("Result: "+result);
+        userstatus =result;
+        //userstatus = verified;
+    }
+
+    protected void getStatus(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String showURL = "http://192.168.0.198:8080/digitalid/homepage.php?username="+username;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println("Result: "+response);
+                userstatus=response;
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
     }
 }
