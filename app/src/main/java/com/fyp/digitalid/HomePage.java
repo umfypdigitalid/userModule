@@ -2,10 +2,16 @@ package com.fyp.digitalid;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,7 +36,7 @@ public class HomePage extends BaseActivity {
 
     TextView textViewLogOut, textViewUsername, textViewContactUs;
     Button btnPersonalData, btnGenerateQR, btnScanQR;
-    String username;
+    public static String username;
     String userstatus;
     String verified = "VERIFIED";
     String unverified = "UNVERIFIED";
@@ -38,6 +44,7 @@ public class HomePage extends BaseActivity {
     BufferedInputStream is;
     String line = null;
     String result = null;
+    DrawerLayout drawerLayout;
 
     //private Timer timer;
     //private Toolbar toolbar;
@@ -47,7 +54,8 @@ public class HomePage extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        textViewLogOut = findViewById(R.id.textViewLogout);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        //textViewLogOut = findViewById(R.id.textViewLogout);
         btnPersonalData = findViewById(R.id.btnpersonaldata);
         btnGenerateQR = findViewById(R.id.btngiveaccess);
         btnScanQR = findViewById(R.id.btnscanqr);
@@ -60,23 +68,23 @@ public class HomePage extends BaseActivity {
         //getUserStatus();
         getStatus();
 
-        textViewContactUs.setOnClickListener(new View.OnClickListener() {
+       /* textViewContactUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ContactUs.class);
                 intent.putExtra("Username", username);
                 startActivityForResult(intent,999);
             }
-        });
+        });*/
 
-        textViewLogOut.setOnClickListener(new View.OnClickListener() {
+        /*textViewLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext() ,LogOut.class);
                 startActivity(intent);
                 finish();
             }
-        });
+        });*/
 
         btnPersonalData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,9 +105,9 @@ public class HomePage extends BaseActivity {
                     intent.putExtra("Username", username);
                     startActivityForResult(intent,999);
                     //startActivity(intent);
-                } if(userstatus==unverified){
+                } if(userstatus.equals(unverified)){
                     unverified();
-                }if(userstatus==verifying){
+                }if(userstatus.equals(verifying)){
                     verifying();
                 }
 
@@ -117,9 +125,9 @@ public class HomePage extends BaseActivity {
                     /*Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
                     startActivity(intent);*/
-                } if(userstatus==unverified){
+                } if(userstatus.equals(unverified)){
                     unverified();
-                } if(userstatus==verifying){
+                } if(userstatus.equals(verifying)){
                     verifying();
                 }
             }
@@ -149,7 +157,7 @@ public class HomePage extends BaseActivity {
     }
 
 
-    protected void getUserStatus(){
+   /* protected void getUserStatus(){
         String showURL = "http://192.168.0.198:8080/digitalid/homepage.php?username="+username;
         try{
 
@@ -178,7 +186,7 @@ public class HomePage extends BaseActivity {
         System.out.println("Result: "+result);
         userstatus =result;
         //userstatus = verified;
-    }
+    }*/
 
     protected void getStatus(){
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -196,5 +204,88 @@ public class HomePage extends BaseActivity {
             }
         });
         queue.add(stringRequest);
+    }
+
+    public void ClickMenu(View view){
+        openDrawer(drawerLayout);
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout) {
+        //open drawer
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public void ClickLogo(View view){
+        //close drawer
+        closeDrawer(drawerLayout);
+    }
+
+    public static void closeDrawer(DrawerLayout drawerLayout) {
+        //if drawer is open
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    public void ClickHome(View view){
+        //recreate activity
+        recreate();
+    }
+
+    public void ClickDashboard(View view){
+        //redirect activity to dashboard
+        redirectActivity(this,PersonalData.class);
+    }
+
+    public void ClickAboutUs(View view){
+        redirectActivity(this,ContactUs.class);
+    }
+
+    public void ClickLogout(View view){
+        logout(this);
+    }
+
+    public static void logout(final Activity activity){
+        //initialize alert
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        //set title
+        builder.setTitle("Logout");
+        //set message
+        builder.setMessage("Are you sure you want to logout ?");
+        // yes button
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                redirectActivity(activity, LogOut.class);
+                /*//Finish activity
+                activity.finishAffinity();
+                //exit app
+                System.exit(0);*/
+            }
+        });
+        //Negative no buton
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Dismiss dialog
+                dialog.dismiss();
+            }
+        });
+        //Show dialog
+        builder.show();
+    }
+
+    public static void redirectActivity(Activity activity, Class aClass) {
+        Intent intent = new Intent(activity, aClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("Username", username);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //close drawer
+        closeDrawer(drawerLayout);
     }
 }

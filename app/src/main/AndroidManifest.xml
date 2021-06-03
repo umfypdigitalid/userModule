@@ -21,7 +21,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ContactUs"
-            android:label=" "
+            android:theme="@style/Theme.Design.Light.NoActionBar"
             />
         <activity
             android:name=".VerifyAccount"
@@ -40,7 +40,8 @@
             android:label="@string/giveaccess" />
         <activity
             android:name=".PersonalData"
-            android:label="@string/yourinfo" />
+            android:theme="@style/Theme.Design.Light.NoActionBar"
+             />
         <activity
             android:name=".HomePage"
             android:theme="@style/Theme.Design.Light.NoActionBar" />

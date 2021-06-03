@@ -1,10 +1,12 @@
 package com.fyp.digitalid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.View;
 import android.widget.TextView;
 
 
@@ -23,6 +25,7 @@ public class PersonalData extends BaseActivity {
     BufferedInputStream is;
     String line = null;
     String result = null;
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class PersonalData extends BaseActivity {
         textView4 = findViewById(R.id.textViewEmail);
         textView5 = findViewById(R.id.textViewAddress);
         textViewUserStatus = findViewById(R.id.tvuserstatus);
+        drawerLayout = findViewById(R.id.drawer_layout);
 
         getData();
 
@@ -49,6 +53,35 @@ public class PersonalData extends BaseActivity {
         finish();
     }
 
+    public void ClickMenu(View view){
+        HomePage.openDrawer(drawerLayout);
+    }
+
+    public void ClickLogo(View view){
+        HomePage.closeDrawer(drawerLayout);
+    }
+
+    public void ClickHome(View view){
+        HomePage.redirectActivity(this,HomePage.class);
+    }
+
+    public void ClickDashboard(View view){
+        recreate();
+    }
+
+    public void ClickAboutUs(View view){
+        HomePage.redirectActivity(this,ContactUs.class);
+    }
+
+    public void ClickLogout(View view){
+        HomePage.logout(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        HomePage.closeDrawer(drawerLayout);
+    }
 
     private void getData(){
 
