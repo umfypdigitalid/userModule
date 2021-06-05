@@ -56,11 +56,12 @@
             <Button
                 android:id="@+id/btnpersonaldata"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="286dp"
+                android:layout_width="match_parent"
                 android:layout_height="224dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:background="@color/black"
                 android:text="@string/personaldata" />
 

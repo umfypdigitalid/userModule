@@ -40,6 +40,11 @@ public class Login extends AppCompatActivity {
 
 
     @Override
+    public void onBackPressed() {
+        /*super.onBackPressed();*/
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);

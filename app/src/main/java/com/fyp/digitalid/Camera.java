@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -43,12 +44,14 @@ public class Camera extends BaseActivity {
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
 
+    String userstatus = "VERIFYING";
     Button captureBtn;
     Button nextBtn;
     ImageView imageView;
     Uri image_uri;
     String icimage,username;
     byte[] bytes;
+
     private String URL= "http://192.168.0.198:8080/digitalid/updateIcImage.php";
 
     //todo: store image
@@ -58,6 +61,7 @@ public class Camera extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
         System.out.println("Test");
         imageView = findViewById(R.id.image_view);
         captureBtn = findViewById(R.id.capture_image_btn);
@@ -71,23 +75,27 @@ public class Camera extends BaseActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!icimage.equals("")&&!username.equals("") ) {
+                nextBtn.setClickable(false);
+                putdata();
+                /*if(!icimage.equals("")&&!username.equals("") ) {
                     //progressBar.setVisibility(View.VISIBLE);
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
 
-                            Thread thread = new Thread() {
-                                public void run() {
+                            //Thread thread = new Thread() {
+                                //public void run() {
                                     //Creating array for parameters
-                                    String[] field = new String[2];
+                                    String[] field = new String[3];
                                     field[0] = "username";
                                     field[1] = "icimage";
+                                    field[2] = "userstatus";
                                     //Creating array for data
-                                    String[] data = new String[2];
+                                    String[] data = new String[3];
                                     data[0] = username;
                                     data[1] = icimage;
+                                    data[2] = userstatus;
                                     System.out.println("Username: "+username+"\nIcimage: "+icimage);
                                     //192.168.0.198
                                     PutData putData = new PutData(URL, "POST", field, data);
@@ -97,82 +105,30 @@ public class Camera extends BaseActivity {
                                             //progressBar.setVisibility(View.GONE);
                                             String result = putData.getResult();
                                             if (result.equals("Success")) {
-                                                //Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
                                                 Intent intent = new Intent(getApplicationContext(), Verifying.class);
                                                 intent.putExtra("Username", username);
                                                 startActivity(intent);
                                                 finish();
                                             } else {
-                                                //Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
                                             }
                                             Log.i("PutData", result);
                                         }
                                     }
                                 }
 
-                            };
-                            thread.start();
-                        }
+                            //};
+                       //     thread.start();
+                       // }
                     });
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Please snap picture of your identity card", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
-               /* if(icimage!=null) {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            System.out.println("response: "+response);
-                            if (response.equals("Success")) {
-                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(), Verifying.class);
-                                intent.putExtra("Username", username);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> data = new HashMap<>();
-                            //data.put("username",username);
-                            data.put("icimage",icimage);
-                            return data;
-                        }
-                    };
-                    //stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, -1, 0));
-                    stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 48,
-                            0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                    requestQueue.add(stringRequest);
-                }else{
-                    Toast.makeText(getApplicationContext(), "Please snap picture of your identity card.", Toast.LENGTH_SHORT).show();
-                }*/
 
-                /*
-                System.out.println("bytes: "+image_uri);
-                if(image_uri!=null) {
-                    //update userstatus to verifying
-                    Intent intent = new Intent(Camera.this, Verifying.class);
-                    intent.setData(image_uri);
-                    //intent.putExtra("uri",image_uri);
-                    System.out.println("put extra");
-                    startActivity(intent);
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Please snap picture of your identity card.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
 
 
         captureBtn.setOnClickListener(new View.OnClickListener() {
@@ -247,6 +203,7 @@ public class Camera extends BaseActivity {
                 public void run() {
                     System.out.println("Thread Running");
                     //set the image captured to our ImageView
+                    nextBtn.setClickable(false);
                     convertbase64();
                 }
             };
@@ -278,5 +235,43 @@ public class Camera extends BaseActivity {
         // Get base64 encoded string
         icimage = Base64.encodeToString(bytes, Base64.DEFAULT);
         System.out.println("Done convert to base64");
+        nextBtn.setClickable(true);
+    }
+
+    protected void putdata(){
+        if(icimage!=null) {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (response.equals("Success")) {
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), Verifying.class);
+                        intent.putExtra("Username",username);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("username",username);
+                    data.put("icimage",icimage);
+                    data.put("userstatus", userstatus);
+                    return data;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest);
+        }else{
+            Toast.makeText(getApplicationContext(), "Please snap picture of your identity card", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -32,11 +32,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
-        android:drawableTop="@drawable/ic_logout"
-        android:drawableTint="@color/black"
+        android:drawableTop="@drawable/ic_lock"
         android:textColor="@color/black"
         android:fontFamily="@font/poppinsmedium"
         android:text="@string/login"
+        android:textAlignment="center"
         android:textSize="18dp"
 
         app:layout_constraintEnd_toEndOf="parent"

@@ -34,8 +34,8 @@ public class LogOut extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, Login.class);
+        /*Intent intent = new Intent(this, Login.class);
         startActivity(intent);
-        finish();
+        finish();*/
     }
 }

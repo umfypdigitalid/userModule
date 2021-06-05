@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.CAMERA" /> <!-- Adding Camera, Write External Storage Permission -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!--android:name=".MyApp"-->
 
     <application
         android:allowBackup="true"
@@ -19,10 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalID"
         android:usesCleartextTraffic="true">
+        <activity android:name=".QrHistory"></activity>
         <activity
             android:name=".ContactUs"
-            android:theme="@style/Theme.Design.Light.NoActionBar"
-            />
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
             android:name=".VerifyAccount"
             android:label="Verify Your Account" />
@@ -40,8 +39,7 @@
             android:label="@string/giveaccess" />
         <activity
             android:name=".PersonalData"
-            android:theme="@style/Theme.Design.Light.NoActionBar"
-             />
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
             android:name=".HomePage"
             android:theme="@style/Theme.Design.Light.NoActionBar" />

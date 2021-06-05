@@ -100,14 +100,14 @@ public class HomePage extends BaseActivity {
         btnGenerateQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userstatus.equals(verified)) {
+                if(userstatus.equalsIgnoreCase(verified)) {
                     Intent intent = new Intent(getApplicationContext(), GiveAccess.class);
                     intent.putExtra("Username", username);
                     startActivityForResult(intent,999);
                     //startActivity(intent);
-                } if(userstatus.equals(unverified)){
+                } if(userstatus.equalsIgnoreCase(unverified)){
                     unverified();
-                }if(userstatus.equals(verifying)){
+                }if(userstatus.equalsIgnoreCase(verifying)){
                     verifying();
                 }
 
@@ -118,16 +118,16 @@ public class HomePage extends BaseActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("userstatus scanqr: "+userstatus);
-                if(userstatus.equals(verified)) {
+                if(userstatus.equalsIgnoreCase(verified)) {
                     Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
                     startActivityForResult(intent,999);
                     /*Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
                     startActivity(intent);*/
-                } if(userstatus.equals(unverified)){
+                } if(userstatus.equalsIgnoreCase(unverified)){
                     unverified();
-                } if(userstatus.equals(verifying)){
+                } if(userstatus.equalsIgnoreCase(verifying)){
                     verifying();
                 }
             }
