@@ -11,6 +11,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
@@ -22,6 +29,8 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class QrScanner extends BaseActivity {
@@ -30,7 +39,8 @@ public class QrScanner extends BaseActivity {
     CodeScannerView scannerView;
     TextView resultScan;
     //Button btnShowQr;
-    String username;
+    String username,name="Test",detail,userid;
+    private String URL= "http://192.168.0.198:8080/digitalid/insertQrHistory.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +72,9 @@ public class QrScanner extends BaseActivity {
                     public void run() {
                         System.out.println("qrresult: "+result.getText());
                         resultScan.setText(result.getText());
+                        getuserId();
+                        /*System.out.println("userid on decoded: "+userid);
+                        putData(result.getText(),userid);*/
                     }
                 });
             }
@@ -106,5 +119,64 @@ public class QrScanner extends BaseActivity {
                 token.continuePermissionRequest();
             }
         }).check();
+    }
+
+    protected void putData(String detail, String userid){
+        System.out.println("putdata userid: "+userid);
+        if(detail!=null&&name!=null&&userid!=null) {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    System.out.println(response);
+                    if (response.equals("Success")) {
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                        /*Intent intent = new Intent(getApplicationContext(), Verifying.class);
+                        intent.putExtra("Username",username);
+                        startActivity(intent);
+                        finish();*/
+                    } else {
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("userid",userid);
+                    data.put("name",name);
+                    data.put("detail", detail);
+                    return data;
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest);
+        }else{
+            Toast.makeText(getApplicationContext(), "Please scan the QR code again", Toast.LENGTH_SHORT).show();
+        }
+    }
+    protected void getuserId(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String showURL = "http://192.168.0.198:8080/digitalid/userid.php?username="+username;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                    Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    userid = response;
+                    System.out.println("userid from response: "+userid);
+                    detail= String.valueOf(resultScan.getText());
+                    putData(detail,userid);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(stringRequest);
     }
 }

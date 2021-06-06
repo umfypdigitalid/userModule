@@ -12,3 +12,14 @@ CREATE TABLE `digitalid`.`userdata` (
 
     PRIMARY KEY (`userId`)
 ) ENGINE = InnoDB;
+
+CREATE TABLE `digitalid`.`qrhistory` (
+    `historyid` INT(200) NOT NULL AUTO_INCREMENT ,
+    `name` VARCHAR(50) NOT NULL ,
+    `detail` TEXT NOT NULL ,
+    `userid` INT NOT NULL ,
+    `scannedon` INT NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+    PRIMARY KEY (`historyid`),
+    FOREIGN KEY (`userid`) REFERENCES users(`userid`)
+) ENGINE = InnoDB;
+
