@@ -1,5 +1,6 @@
 package com.fyp.digitalid;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
@@ -13,6 +14,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -28,7 +30,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.basgeekball.awesomevalidation.utility.RegexTemplate;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
 import java.io.ByteArrayOutputStream;
@@ -36,20 +45,23 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SignUp extends AppCompatActivity {
 
-    TextInputEditText textInputEditTextFullname, textInputEditTextUsername, textInputEditTextPassword, textInputEditTextEmail, textInputEditTextIc, textInputEditTextBirthdate, textInputEditTextAddress;
+    TextInputEditText textInputEditTextFullname, textInputEditTextUsername, textInputEditTextPassword, textInputEditTextConfirmPassword, textInputEditTextEmail, textInputEditTextIc, textInputEditTextBirthdate, textInputEditTextAddress;
     Button buttonSignUp;
     TextView textViewLogin;
     ProgressBar progressBar;
     DatePickerDialog picker;
     String icimage;
     String fullname, username, password, email, ic, birthdate, address;
-    private String URL = "http://192.168.0.198:8080/digitalid/signup2.php";
+    TextView emailerror,passwordError,confirmPassError;
+    private String URL = "http://192.168.0.118:8080/digitalid/signup3.php";
    /* Uri image_uri ;
     byte[] bytes;*/
-
+    AwesomeValidation awesomeValidation;
+    FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,77 +71,121 @@ public class SignUp extends AppCompatActivity {
         textInputEditTextFullname = findViewById(R.id.fullname);
         textInputEditTextUsername = findViewById(R.id.username);
         textInputEditTextPassword = findViewById(R.id.password);
-        textInputEditTextEmail = findViewById(R.id.email);
+        textInputEditTextConfirmPassword = findViewById(R.id.confirmpassword);
         textInputEditTextIc = findViewById(R.id.ic);
-        textInputEditTextBirthdate = findViewById(R.id.birthdate);
-        textInputEditTextAddress = findViewById(R.id.address);
+        textInputEditTextEmail = findViewById(R.id.email);
+        /*textInputEditTextBirthdate = findViewById(R.id.birthdate);
+        textInputEditTextAddress = findViewById(R.id.address);*/
         buttonSignUp = findViewById(R.id.buttonSignUp);
         textViewLogin = findViewById(R.id.loginText);
         progressBar = findViewById(R.id.progress);
+        fAuth = FirebaseAuth.getInstance();
+
+
         //image_uri=getIntent().getData();
         //convertbase64();
         //icimage = Base64.encodeToString(bytes, Base64.DEFAULT);
         //icimage = getIntent().getStringExtra("icimage");
         fullname = username = password = email = ic = birthdate = address ="";
-        System.out.println("Signup activity: "+icimage);
+
+        awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
+
+        //awesomeValidation.addValidation(this,R.id.email, Patterns.EMAIL_ADDRESS,R.string.invalid_email);
+        awesomeValidation.addValidation(this, R.id.fullname, RegexTemplate.NOT_EMPTY,R.string.invalid_name);
+        awesomeValidation.addValidation(this, R.id.fullname, RegexTemplate.NOT_EMPTY,R.string.invalid_ic);
+        awesomeValidation.addValidation(this, R.id.fullname, RegexTemplate.NOT_EMPTY,R.string.invalid_username);
+        awesomeValidation.addValidation(this, R.id.password,".{6,}",R.string.invalid_password);
+        awesomeValidation.addValidation(this, R.id.confirmpassword,R.id.password, R.string.invalid_confirm_password);
+        awesomeValidation.addValidation(this, R.id.email, RegexTemplate.NOT_EMPTY,R.string.invalid_email);
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fullname = String.valueOf(textInputEditTextFullname.getText());
-                username = String.valueOf(textInputEditTextUsername.getText());
-                password = String.valueOf(textInputEditTextPassword.getText());
-               /* if(!password.equals(reenterPassword)){
+                if (awesomeValidation.validate()) {
+                    //Toast.makeText(getApplicationContext(),"Validation Success", Toast.LENGTH_SHORT).show();
+
+                    fullname = String.valueOf(textInputEditTextFullname.getText());
+                    username = String.valueOf(textInputEditTextUsername.getText());
+                    password = String.valueOf(textInputEditTextPassword.getText());
+                    ic = String.valueOf(textInputEditTextIc.getText());
+                    email = String.valueOf(textInputEditTextEmail.getText());
+                /*validateEmail();
+                validatePassword();*/
+                /* if(!password.equals(reenterPassword)){
                     //toast
                 }*/
-                email = String.valueOf(textInputEditTextEmail.getText());
-                ic = String.valueOf(textInputEditTextIc.getText());
-                birthdate = String.valueOf(textInputEditTextBirthdate.getText());
-                address = String.valueOf(textInputEditTextAddress.getText());
 
-                if(!fullname.equals("")&&!username.equals("") &&!password.equals("")&&!email.equals("")&&!ic.equals("")&&!birthdate.equals("")&&!address.equals("")) {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (response.equals("Sign Up Success")) {
-                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                                buttonSignUp.setClickable(false);
-                                Intent intent = new Intent(getApplicationContext(), Login.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                /*email = String.valueOf(textInputEditTextEmail.getText());
+                birthdate = String.valueOf(textInputEditTextBirthdate.getText());
+                address = String.valueOf(textInputEditTextAddress.getText());*/
+
+                    if (!fullname.equals("") && !username.equals("") && !password.equals("") && !ic.equals("") && !email.equals("")) {
+                        fAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(getApplicationContext(), "User Created.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Error Creating User! "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> data = new HashMap<>();
-                            data.put("fullname",fullname);
-                            data.put("username",username);
-                            data.put("password",password);
-                            data.put("ic",ic);
-                            data.put("birthdate",birthdate);
-                            data.put("email",email);
-                            data.put("address",address);
-                            //data.put("icimage",icimage);
-                            return data;
-                        }
-                    };
-                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                    requestQueue.add(stringRequest);
-                }else{
-                    Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+                        });
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                if (response.equals("Sign Up Success")) {
+                                    Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                                    buttonSignUp.setClickable(false);
+                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+                            }
+                        }) {
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> data = new HashMap<>();
+                                data.put("fullname", fullname);
+                                data.put("username", username);
+                                data.put("password", password);
+                                data.put("ic", ic);
+                                data.put("email",email);
+                            /*data.put("birthdate",birthdate);
+                            data.put("address",address);*/
+                                //data.put("icimage",icimage);
+                                return data;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        requestQueue.add(stringRequest);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),"Validation Failed",Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        textInputEditTextBirthdate.setOnClickListener(new View.OnClickListener() {
+        textViewLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
+
+       /* textInputEditTextBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InputMethodManager imm = (InputMethodManager)getSystemService(
@@ -149,17 +205,7 @@ public class SignUp extends AppCompatActivity {
                         }, year, month, day);
                 picker.show();
             }
-        });
-
-        textViewLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
+        });*/
 
        /* buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,6 +274,31 @@ public class SignUp extends AppCompatActivity {
         });*/
 
 
+    }
+    private void validateEmail() {
+        String emailInput = textInputEditTextEmail.getText().toString().trim();
+        if (emailInput.isEmpty()) {
+            emailerror.setText("Field can't be empty");
+
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
+            emailerror.setText("Please enter a valid email address");
+        } else {
+            emailerror.setError(null);
+        }
+    }
+    private void validatePassword() {
+        String passwordInput = textInputEditTextPassword.getText().toString().trim();
+        String ConfitmpasswordInput = textInputEditTextConfirmPassword.getText().toString().trim();
+        if (passwordInput.isEmpty()) {
+            passwordError.setText("Field can't be empty");
+        }  if (passwordInput.length()<5) {
+            passwordError.setText("Password must be at least 5 characters");
+        }
+        if (!passwordInput.equals(ConfitmpasswordInput)) {
+            confirmPassError.setText("Password Would Not be matched");
+        }else {
+            confirmPassError.setText("Password Matched");
+        }
     }
 
 }

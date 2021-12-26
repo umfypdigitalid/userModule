@@ -15,4 +15,6 @@
     <color name="black_80">#60000000</color>
     <color name="blue_300">#4CC3F4</color>
     <color name="blue_50">#ABE0F6</color>
+    <color name="red_alert">#E85D5D</color>
+    <color name="green_accept">#5EE67B</color>
 </resources>

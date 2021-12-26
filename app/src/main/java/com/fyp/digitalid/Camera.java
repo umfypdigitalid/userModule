@@ -52,7 +52,7 @@ public class Camera extends BaseActivity {
     String icimage,username;
     byte[] bytes;
 
-    private String URL= "http://192.168.0.198:8080/digitalid/updateIcImage.php";
+    private String URL= "http://192.168.0.118:8080/digitalid/updateIcImage.php";
 
     //todo: store image
 
@@ -69,67 +69,14 @@ public class Camera extends BaseActivity {
         username = getIntent().getStringExtra("Username");
         System.out.println("camera username: "+username);
 
-
-
         //button click
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 nextBtn.setClickable(false);
                 putdata();
-                /*if(!icimage.equals("")&&!username.equals("") ) {
-                    //progressBar.setVisibility(View.VISIBLE);
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            //Thread thread = new Thread() {
-                                //public void run() {
-                                    //Creating array for parameters
-                                    String[] field = new String[3];
-                                    field[0] = "username";
-                                    field[1] = "icimage";
-                                    field[2] = "userstatus";
-                                    //Creating array for data
-                                    String[] data = new String[3];
-                                    data[0] = username;
-                                    data[1] = icimage;
-                                    data[2] = userstatus;
-                                    System.out.println("Username: "+username+"\nIcimage: "+icimage);
-                                    //192.168.0.198
-                                    PutData putData = new PutData(URL, "POST", field, data);
-                                    //PutData putData = new PutData("https://digitalidum.000webhostapp.com/lq/signup.php", "POST", field, data);
-                                    if (putData.startPut()) {
-                                        if (putData.onComplete()) {
-                                            //progressBar.setVisibility(View.GONE);
-                                            String result = putData.getResult();
-                                            if (result.equals("Success")) {
-                                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(getApplicationContext(), Verifying.class);
-                                                intent.putExtra("Username", username);
-                                                startActivity(intent);
-                                                finish();
-                                            } else {
-                                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-                                            }
-                                            Log.i("PutData", result);
-                                        }
-                                    }
-                                }
-
-                            //};
-                       //     thread.start();
-                       // }
-                    });
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Please snap picture of your identity card", Toast.LENGTH_SHORT).show();
-                }*/
             }
         });
-
-
 
         captureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,9 +134,7 @@ public class Camera extends BaseActivity {
                 }
             }
         }
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -216,7 +161,6 @@ public class Camera extends BaseActivity {
                     convertbase64();
                 }
             }).start();*/
-
         }
     }
     protected void convertbase64(){
@@ -274,4 +218,53 @@ public class Camera extends BaseActivity {
             Toast.makeText(getApplicationContext(), "Please snap picture of your identity card", Toast.LENGTH_SHORT).show();
         }
     }
+    /*if(!icimage.equals("")&&!username.equals("") ) {
+                    //progressBar.setVisibility(View.VISIBLE);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            //Thread thread = new Thread() {
+                                //public void run() {
+                                    //Creating array for parameters
+                                    String[] field = new String[3];
+                                    field[0] = "username";
+                                    field[1] = "icimage";
+                                    field[2] = "userstatus";
+                                    //Creating array for data
+                                    String[] data = new String[3];
+                                    data[0] = username;
+                                    data[1] = icimage;
+                                    data[2] = userstatus;
+                                    System.out.println("Username: "+username+"\nIcimage: "+icimage);
+                                    //192.168.0.198
+                                    PutData putData = new PutData(URL, "POST", field, data);
+                                    //PutData putData = new PutData("https://digitalidum.000webhostapp.com/lq/signup.php", "POST", field, data);
+                                    if (putData.startPut()) {
+                                        if (putData.onComplete()) {
+                                            //progressBar.setVisibility(View.GONE);
+                                            String result = putData.getResult();
+                                            if (result.equals("Success")) {
+                                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(getApplicationContext(), Verifying.class);
+                                                intent.putExtra("Username", username);
+                                                startActivity(intent);
+                                                finish();
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                                            }
+                                            Log.i("PutData", result);
+                                        }
+                                    }
+                                }
+
+                            //};
+                       //     thread.start();
+                       // }
+                    });
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please snap picture of your identity card", Toast.LENGTH_SHORT).show();
+                }*/
 }

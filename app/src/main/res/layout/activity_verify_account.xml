@@ -22,7 +22,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
-        android:text="Please verify your account to unlock this feature"
+        android:text="Please verify your account at the verification counter near you to unlock this feature"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="25dp"

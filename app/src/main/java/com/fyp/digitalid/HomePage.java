@@ -190,7 +190,7 @@ public class HomePage extends BaseActivity {
 
     protected void getStatus(){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String showURL = "http://192.168.0.198:8080/digitalid/homepage.php?username="+username;
+        String showURL = "http://192.168.0.118:8080/digitalid/homepage.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -235,6 +235,10 @@ public class HomePage extends BaseActivity {
     public void ClickDashboard(View view){
         //redirect activity to dashboard
         redirectActivity(this,PersonalData.class);
+    }
+
+    public void ClickHistoryQR(View view){
+        redirectActivity(this,QrHistory.class);
     }
 
     public void ClickAboutUs(View view){

@@ -18,7 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DigitalID"
         android:usesCleartextTraffic="true">
-        <activity android:name=".QrHistory"></activity>
+        <activity android:name=".RegisterScanner"></activity>
+        <activity android:name=".UserId" />
+        <activity
+            android:name=".AcceptReject"
+            android:label="Access Request" />
+        <activity
+            android:name=".leqing"
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
+        <activity
+            android:name=".QrHistory"
+            android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
             android:name=".ContactUs"
             android:theme="@style/Theme.Design.Light.NoActionBar" />

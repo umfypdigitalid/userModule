@@ -69,6 +69,8 @@ public class PersonalData extends BaseActivity {
         recreate();
     }
 
+    public void ClickHistoryQR(View view){ HomePage.redirectActivity(this,QrHistory.class); }
+
     public void ClickAboutUs(View view){
         HomePage.redirectActivity(this,ContactUs.class);
     }
@@ -88,7 +90,7 @@ public class PersonalData extends BaseActivity {
         //connection
         username = getIntent().getStringExtra("Username");
         System.out.println("Username: "+username);
-        String showURL = "http://192.168.0.198:8080/digitalid/retrieveData.php?username="+username;
+        String showURL = "http://192.168.0.118:8080/digitalid/retrieveData.php?username="+username;
         try{
 
             URL url = new URL(showURL);

@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -12,6 +13,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -48,8 +50,11 @@ dependencies {
     // volley: fetch value from mysql
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.karumi:dexter:6.0.2'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
     // implementation files('libs\\mysql-connector-java-8.0.24.jar')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.basgeekball:awesome-validation:4.2'
+    implementation 'com.android.support:multidex:1.0.3'
 }

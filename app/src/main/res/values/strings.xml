@@ -37,4 +37,8 @@
     <string name="ic_number">IC number</string>
     <string name="name">Name</string>
     <string name="done">Done</string>
+    <string name="invalid_email">Enter Valid Email</string>
+    <string name="invalid_confirm_password">Password does not match</string>
+    <string name="invalid_name">Fullname cannot be empty.</string>
+    <string name="invalid_ic">IC number cannot be empty.</string>
 </resources>

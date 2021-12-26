@@ -1,7 +1,10 @@
 package com.fyp.digitalid;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +12,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +24,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
 import java.util.HashMap;
@@ -30,13 +40,14 @@ import java.util.TimerTask;
 
 public class Login extends AppCompatActivity {
 
-    TextInputEditText  textInputEditTextUsername, textInputEditTextPassword;
+    TextInputEditText  textInputEditTextUsername, textInputEditTextPassword, textInputEditTextEmail;
     Button buttonLogin;
-    TextView textViewSignUp;
+    TextView textViewSignUp, textViewForgotPassword;
     ProgressBar progressBar;
-    private String username, password;
-    private String URL = "http://192.168.0.198:8080/digitalid/login.php";
+    private String username, password, email;
+    private String URL = "http://192.168.0.118:8080/digitalid/login.php";
     private Timer timer;
+    FirebaseAuth fAuth;
 
 
     @Override
@@ -49,11 +60,15 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         username = password = "";
-        textInputEditTextUsername = findViewById(R.id.username);
+
+        textInputEditTextEmail = findViewById(R.id.email);
         textInputEditTextPassword = findViewById(R.id.password);
+
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewSignUp = findViewById(R.id.signUpText);
+        textViewForgotPassword = findViewById(R.id.forgetPassword);
         progressBar = findViewById(R.id.progress);
+        fAuth = FirebaseAuth.getInstance();
 
         textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,47 +81,126 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        textViewForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Reset password");
+                EditText resetMail = new EditText(v.getContext());
+                AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
+                passwordResetDialog.setTitle("Reset Password?");
+                passwordResetDialog.setMessage("Enter Your Email To Received Reset Link.");
+                passwordResetDialog.setView(resetMail);
+                passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Extract the email and send reset link
+                        String mail = resetMail.getText().toString();
+                        fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(Login.this, "Reset Link Sent To Your Email.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(Login.this, "Error! Rest Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                passwordResetDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // close the Dialog
+                    }
+                });passwordResetDialog.create().show();
+            }
+        });
+
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                username = String.valueOf(textInputEditTextUsername.getText());
+                progressBar.setVisibility(View.VISIBLE);
+                email = String.valueOf(textInputEditTextEmail.getText());
                 password = String.valueOf(textInputEditTextPassword.getText());
-                if(!username.equals("") &&!password.equals("")) {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                if (!email.equals("") && !password.equals("")) {
+                    fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onResponse(String response) {
-                            if (response.equals("Login Success")) {
-                                Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
-                                String username = textInputEditTextUsername.getText().toString();
-                                Intent intent = new Intent(getApplicationContext(), HomePage.class);
-                                intent.putExtra("Username", username);
-                                startActivity(intent);
-                                finish();
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+                                Toast.makeText(Login.this,"Logged in Successfully.", Toast.LENGTH_SHORT).show();
+                                getusername();
+
                             } else {
-                                Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this,"Error! "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> data = new HashMap<>();
-                            data.put("username",username);
-                            data.put("password",password);
-                            return data;
-                        }
-                    };
-                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                    requestQueue.add(stringRequest);
-                }else{
-                    Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
-                }
+                    });
+//                    StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            if (response.equals("Login Success")) {
+//                                Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
+//                                String username = textInputEditTextUsername.getText().toString();
+//                                Intent intent = new Intent(getApplicationContext(), HomePage.class);
+//                                intent.putExtra("Username", username);
+//                                startActivity(intent);
+//                                finish();
+//                            } else {
+//                                Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    }, new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }) {
+//                        @Override
+//                        protected Map<String, String> getParams() throws AuthFailureError {
+//                            Map<String, String> data = new HashMap<>();
+//                            data.put("username", username);
+//                            data.put("password", password);
+//                            return data;
+//                        }
+//                    };
+//                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+//                    requestQueue.add(stringRequest);
+
+            } else {
+                Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+
+            }
+                progressBar.setVisibility(View.GONE);
+        }
+        });
+
+    }
+
+    private void getusername(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String showURL = "http://192.168.0.118:8080/digitalid/username.php?email="+email;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println("Result: "+response);
+                username=response;
+                System.out.println("username: "+username);
+                Intent intent = new Intent(getApplicationContext(), HomePage.class);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                finish();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
             }
         });
+        queue.add(stringRequest);
+
+    }
+
 
         /*buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,4 +292,4 @@ public class Login extends AppCompatActivity {
             finish();
         }
     }*/
-}
+

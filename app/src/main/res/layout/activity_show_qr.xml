@@ -10,6 +10,7 @@
     tools:context=".ShowQr"
     android:orientation="vertical">
 
+
     <!--<EditText
         android:id="@+id/input"
         android:layout_width="match_parent"
@@ -26,11 +27,28 @@
         android:layout_marginTop="16dp"
         />-->
 
+    <Button
+        android:id="@+id/btnrefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refesh"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:onClick="refreshQrClikced"
+        />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/output"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"/>
+
+    <TextView
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your QR code will be refreshed every 30 seconds"
+        />
 
 </LinearLayout>

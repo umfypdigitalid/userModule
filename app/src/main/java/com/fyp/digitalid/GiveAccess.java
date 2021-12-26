@@ -2,6 +2,9 @@ package com.fyp.digitalid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -26,6 +29,7 @@ public class GiveAccess extends BaseActivity {
     String line = null;
     String result = null;
     String qrdata=" ";
+    Boolean flag = Boolean.FALSE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +50,20 @@ public class GiveAccess extends BaseActivity {
         btnShowQr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFromDB(username);
-                Intent intent = new Intent(GiveAccess.this, ShowQr.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("Username", username);
-                bundle.putString("qrdata", qrdata);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                System.out.println("Flag: "+flag);
+                if(flag) {
+                    System.out.println("if Flag: "+flag);
+                    getFromDB(username);
+                    Intent intent = new Intent(GiveAccess.this, ShowQr.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Username", username);
+                    bundle.putString("qrdata", qrdata);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                } else {
+                    System.out.println("else Flag: "+flag);
+                    generateqr(GiveAccess.this);
+                }
             }
         });
 
@@ -62,6 +73,7 @@ public class GiveAccess extends BaseActivity {
                 if(cbname.isChecked()){
                     cbname.setTextColor(getResources().getColor(R.color.colorAccent));
                     name=Boolean.TRUE;
+                    flag=Boolean.TRUE;
                 }else {
                     cbname.setTextColor(getResources().getColor(R.color.black));
                     name =Boolean.FALSE;
@@ -75,6 +87,7 @@ public class GiveAccess extends BaseActivity {
                 if(cbic.isChecked()){
                     cbic.setTextColor(getResources().getColor(R.color.colorAccent));
                     ic=Boolean.TRUE;
+                    flag=Boolean.TRUE;
                 }else {
                     cbic.setTextColor(getResources().getColor(R.color.black));
                     ic=Boolean.FALSE;
@@ -88,6 +101,7 @@ public class GiveAccess extends BaseActivity {
                 if(cbbirthdate.isChecked()){
                     cbbirthdate.setTextColor(getResources().getColor(R.color.colorAccent));
                     bd=Boolean.TRUE;
+                    flag=Boolean.TRUE;
                 }else {
                     cbbirthdate.setTextColor(getResources().getColor(R.color.black));
                     bd=Boolean.FALSE;
@@ -101,6 +115,7 @@ public class GiveAccess extends BaseActivity {
                 if(cbemail.isChecked()){
                     cbemail.setTextColor(getResources().getColor(R.color.colorAccent));
                     email = Boolean.TRUE;
+                    flag=Boolean.TRUE;
                 }else {
                     cbemail.setTextColor(getResources().getColor(R.color.black));
                     email=Boolean.FALSE;
@@ -114,6 +129,7 @@ public class GiveAccess extends BaseActivity {
                 if(cbaddress.isChecked()){
                     cbaddress.setTextColor(getResources().getColor(R.color.colorAccent));
                     add = Boolean.TRUE;
+                    flag=Boolean.TRUE;
                 }else {
                     cbaddress.setTextColor(getResources().getColor(R.color.black));
                     add=Boolean.FALSE;
@@ -133,7 +149,7 @@ public class GiveAccess extends BaseActivity {
     private String getFromDB(String username){
         //username = getIntent().getStringExtra("Username");
         System.out.println("Username: "+username);
-        String showURL = "http://192.168.0.198:8080/digitalid/retrieveData.php?username="+username;
+        String showURL = "http://192.168.0.118:8080/digitalid/retrieveData.php?username="+username;
         try{
 
             URL url = new URL(showURL);
@@ -176,5 +192,29 @@ public class GiveAccess extends BaseActivity {
         System.out.println(qrdata);
         return qrdata;
 
+    }
+
+    private static void generateqr(final Activity activity) {
+        //initialize alert
+        AlertDialog builder = new AlertDialog.Builder(activity)
+                .setTitle("QR Generator")
+                .setMessage("Please select at least one personal data to generate the QR code.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create();
+        builder.show();
+        /*//set title
+        builder.setTitle("QR Generator");
+        //set message
+        builder.setMessage("Please select at least one personal data to generate the qr code");
+        // yes button
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });*/
     }
 }

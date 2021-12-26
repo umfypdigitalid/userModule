@@ -2,6 +2,9 @@ package com.fyp.digitalid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +12,7 @@ import android.widget.Button;
 
 public class VerifyAccount extends BaseActivity {
 
-    Button btnveriftnow, btncancel;
+    Button btnverifynow, btncancel;
     String username;
 
     @Override
@@ -17,14 +20,14 @@ public class VerifyAccount extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_account);
 
-        btnveriftnow = findViewById(R.id.btnverifynow);
+        btnverifynow = findViewById(R.id.btnverifynow);
         btncancel = findViewById(R.id.btncancel);
         username = getIntent().getStringExtra("Username");
 
-        btnveriftnow.setOnClickListener(new View.OnClickListener() {
+        btnverifynow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(VerifyAccount.this, Camera.class);
+                Intent intent = new Intent(VerifyAccount.this, RegisterScanner.class);
                 System.out.println("verify account username: "+username);
                 intent.putExtra("Username", username);
                 startActivity(intent);
@@ -39,5 +42,7 @@ public class VerifyAccount extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+
     }
 }

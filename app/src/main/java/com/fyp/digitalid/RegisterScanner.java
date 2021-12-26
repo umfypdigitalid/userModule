@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +33,8 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
-public class QrScanner extends BaseActivity {
+public class RegisterScanner extends AppCompatActivity {
 
     CodeScanner qrscanner;
     CodeScannerView scannerView;
@@ -45,7 +46,7 @@ public class QrScanner extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qr_scanner);
+        setContentView(R.layout.activity_register_scanner);
 
         scannerView = findViewById(R.id.qrscanner);
         qrscanner = new CodeScanner(this, scannerView);
@@ -62,6 +63,7 @@ public class QrScanner extends BaseActivity {
                         System.out.println("qrresult: "+result.getText());
                         resultScan.setText(result.getText());
                         getuserId();
+                        verified(RegisterScanner.this);
                     }
                 });
             }
@@ -77,10 +79,31 @@ public class QrScanner extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
+//        Intent intent = new Intent();
+//        intent.putExtra("Username", username);
+//        setResult(RESULT_OK, intent);
+//        finish();
+        Intent intent = new Intent(getApplicationContext(), HomePage.class);
         intent.putExtra("Username", username);
-        setResult(RESULT_OK, intent);
+        startActivity(intent);
         finish();
+    }
+
+    private void verified(final Activity activity) {
+        //initialize alert
+        AlertDialog builder = new AlertDialog.Builder(activity)
+                .setTitle("Verified")
+                .setMessage("Your account have been verified")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(activity, HomePage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("Username", username);
+                        activity.startActivity(intent);
+                    }
+                }).create();
+        builder.show();
     }
 
     @Override
@@ -98,7 +121,7 @@ public class QrScanner extends BaseActivity {
 
             @Override
             public void onPermissionDenied(PermissionDeniedResponse response) {
-                Toast.makeText(QrScanner.this, "Camera Permission is Required.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterScanner.this, "Camera Permission is Required.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -152,11 +175,11 @@ public class QrScanner extends BaseActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                    //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                    userid = response;
-                    System.out.println("userid from response: "+userid);
-                    detail= String.valueOf(resultScan.getText());
-                    putData(detail,userid);
+                //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                userid = response;
+                System.out.println("userid from response: "+userid);
+                detail= String.valueOf(resultScan.getText());
+                putData(detail,userid);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -166,4 +189,6 @@ public class QrScanner extends BaseActivity {
         });
         queue.add(stringRequest);
     }
+
+
 }

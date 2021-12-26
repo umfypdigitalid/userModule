@@ -23,21 +23,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Verifying extends BaseActivity {
-    Button buttonDone;
+    Button buttonCancel, btnVerifyNow;
     String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verifying);
-        buttonDone = findViewById(R.id.btndone);
+        buttonCancel = findViewById(R.id.btncancel);
         username = getIntent().getStringExtra("Username");
 
-        buttonDone.setOnClickListener(new View.OnClickListener() {
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), HomePage.class);
                 intent.putExtra("Username",username);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        btnVerifyNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RegisterScanner.class);
+                intent.putExtra("Username", username);
                 startActivity(intent);
                 finish();
             }
