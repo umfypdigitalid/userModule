@@ -2,7 +2,7 @@
 require "DataBase.php";
 //include('DataBase.php');
 
-$stmt = $connect->prepare("SELECT fullName, ic, email, address FROM users");
+$stmt = $connect->prepare("SELECT fullName, ic, email, address FROM userdata");
 
 $stmt ->execute();
 $stmt -> bind_result($fullName, $ic, $email, $address);
@@ -29,7 +29,7 @@ echo json_encode($personaldata);
 require "DataBase.php";
 $db = new DataBase();
 $con=$db->dbConnect();
-$query=mysqli_query($con, "SELECT fullName, ic, email, address FROM users where username='leqing0915'");
+$query=mysqli_query($con, "SELECT fullName, ic, email, address FROM userdata where username='leqing0915'");
 
 $result = $query;
 $row = mysqli_fetch_assoc($result);

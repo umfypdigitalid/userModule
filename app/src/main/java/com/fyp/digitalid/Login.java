@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -59,6 +60,8 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
+
         username = password = "";
 
         textInputEditTextEmail = findViewById(R.id.email);
@@ -178,6 +181,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void getusername(){
+        System.out.println("Get username");
         RequestQueue queue = Volley.newRequestQueue(this);
         String showURL = "http://192.168.0.118:8080/digitalid/username.php?email="+email;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {

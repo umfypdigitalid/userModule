@@ -34,7 +34,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterScanner extends AppCompatActivity {
+public class RegisterScanner extends BaseActivity {
 
     CodeScanner qrscanner;
     CodeScannerView scannerView;
@@ -63,6 +63,7 @@ public class RegisterScanner extends AppCompatActivity {
                         System.out.println("qrresult: "+result.getText());
                         resultScan.setText(result.getText());
                         getuserId();
+                        updateUserStatus();
                         verified(RegisterScanner.this);
                     }
                 });
@@ -75,6 +76,28 @@ public class RegisterScanner extends AppCompatActivity {
                 qrscanner.startPreview();
             }
         });
+    }
+
+    private void updateUserStatus() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String showURL = "http://192.168.0.118:8080/digitalid/updateuserstatus.php?username="+username;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println("Result: "+response);
+                if (response.equals("Success")) {
+                    Toast.makeText(RegisterScanner.this, "User Status Updated", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(RegisterScanner.this, "User Status Updated Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(RegisterScanner.this, error.getMessage().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(stringRequest);
     }
 
     @Override
@@ -97,6 +120,7 @@ public class RegisterScanner extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         Intent intent = new Intent(activity, HomePage.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("Username", username);

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,12 +41,13 @@ public class QrScanner extends BaseActivity {
     TextView resultScan;
     //Button btnShowQr;
     String username,name="Test",detail,userid;
-    private String URL= "http://192.168.0.118:8080/digitalid/insertQrHistory.php";
+    private String URL= "http://192.168.0.118:8080/digitalid/insertQrHistory1.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scanner);
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
 
         scannerView = findViewById(R.id.qrscanner);
         qrscanner = new CodeScanner(this, scannerView);
@@ -108,7 +110,7 @@ public class QrScanner extends BaseActivity {
         }).check();
     }
 
-    protected void putData(String detail, String userid){
+    protected void putData(String detail, String userid, String username){
         System.out.println("putdata userid: "+userid);
         if(detail!=null&&name!=null&&userid!=null) {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
@@ -137,6 +139,7 @@ public class QrScanner extends BaseActivity {
                     data.put("userid",userid);
                     data.put("name",name);
                     data.put("detail", detail);
+                    data.put("username",username);
                     return data;
                 }
             };
@@ -156,7 +159,7 @@ public class QrScanner extends BaseActivity {
                     userid = response;
                     System.out.println("userid from response: "+userid);
                     detail= String.valueOf(resultScan.getText());
-                    putData(detail,userid);
+                    putData(detail,userid,username);
             }
         }, new Response.ErrorListener() {
             @Override

@@ -61,9 +61,10 @@ class DataBase
         $birthdate = $this->prepareData($birthdate);
         $email = $this->prepareData($email);
         $address = $this->prepareData($address);
+	//$icimage = $this->prepareData($icimage);
         $password = password_hash($password, PASSWORD_DEFAULT);
         $this->sql =
-            "INSERT INTO " . $table . " (fullname, username, password, ic, birthdate, email, address) VALUES ('" . $fullname . "','" . $username . "','" . $password . "','" . $ic . "','" . $birthdate . "','" . $email . "','" . $address . "')";
+            "INSERT INTO " . $table . " (fullname, username, password, ic, birthdate, email, address, icimage) VALUES ('" . $fullname . "','" . $username . "','" . $password . "','" . $ic . "','" . $birthdate . "','" . $email . "','" . $address . "')";
         if (mysqli_query($this->connect, $this->sql)) {
             return true;
         } else return false;
