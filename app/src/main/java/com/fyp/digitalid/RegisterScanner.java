@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -41,7 +42,10 @@ public class RegisterScanner extends BaseActivity {
     TextView resultScan;
     //Button btnShowQr;
     String username,name="Test",detail,userid;
+    String claimid = "0x03f37c392bcb3e9e1ca114d09acb4239a90146a76d063c3dabcd9c1f0445991c";
+    String contractaddress = "0xbf5a2561e6663656a5b36CE37AFF7621Acf93203";
     private String URL= "http://192.168.0.118:8080/digitalid/insertQrHistory.php";
+    DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class RegisterScanner extends BaseActivity {
         qrscanner = new CodeScanner(this, scannerView);
         resultScan = findViewById(R.id.scanresult);
         username = getIntent().getStringExtra("Username");
+        mDatabaseHelper = new DatabaseHelper(this);
 
         //detected and decode
         qrscanner.setDecodeCallback(new DecodeCallback() {
@@ -64,6 +69,8 @@ public class RegisterScanner extends BaseActivity {
                         resultScan.setText(result.getText());
                         getuserId();
                         updateUserStatus();
+                        AddData(claimid, contractaddress);
+                        Cursor data = mDatabaseHelper.getData();
                         verified(RegisterScanner.this);
                     }
                 });
@@ -212,6 +219,16 @@ public class RegisterScanner extends BaseActivity {
             }
         });
         queue.add(stringRequest);
+    }
+
+    public void AddData(String claimid, String contractaddress) {
+        boolean insertData = mDatabaseHelper.addData(claimid, contractaddress);
+
+        if(insertData){
+            Toast.makeText(getApplicationContext(),"Data Successfully Inserted!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(),"Something went wrong", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

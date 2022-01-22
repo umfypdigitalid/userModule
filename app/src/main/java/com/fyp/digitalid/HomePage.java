@@ -118,6 +118,7 @@ public class HomePage extends BaseActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("userstatus scanqr: "+userstatus);
+                userstatus=unverified;
                 if(userstatus.equalsIgnoreCase(verified)) {
                     Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
