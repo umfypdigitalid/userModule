@@ -15,11 +15,16 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.TextureView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +41,7 @@ import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.vishnusivadas.advanced_httpurlconnection.PutData;
@@ -49,19 +55,22 @@ import java.util.regex.Pattern;
 
 public class SignUp extends AppCompatActivity {
 
-    TextInputEditText textInputEditTextFullname, textInputEditTextUsername, textInputEditTextPassword, textInputEditTextConfirmPassword, textInputEditTextEmail, textInputEditTextIc, textInputEditTextBirthdate, textInputEditTextAddress;
+    TextInputEditText textInputEditTextFullname, textInputEditTextUsername, textInputEditTextPassword,
+             textInputEditTextConfirmPassword, textInputEditTextEmail, textInputEditTextIc, textInputEditTextBirthdate, textInputEditTextAddress;
+    TextInputLayout textInputLayoutGender;
     Button buttonSignUp;
     TextView textViewLogin;
     ProgressBar progressBar;
     DatePickerDialog picker;
-    String icimage;
-    String fullname, username, password, email, ic, birthdate, address;
+    //String icimage;
+    String fullname, username, password, email, ic, dob, address,gender;
     TextView emailerror,passwordError,confirmPassError;
     private String URL = "http://192.168.0.118:8080/digitalid/signup3.php";
    /* Uri image_uri ;
     byte[] bytes;*/
     AwesomeValidation awesomeValidation;
     FirebaseAuth fAuth;
+    AutoCompleteTextView dropdowntext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,29 +83,52 @@ public class SignUp extends AppCompatActivity {
         textInputEditTextConfirmPassword = findViewById(R.id.confirmpassword);
         textInputEditTextIc = findViewById(R.id.ic);
         textInputEditTextEmail = findViewById(R.id.email);
-        /*textInputEditTextBirthdate = findViewById(R.id.birthdate);
-        textInputEditTextAddress = findViewById(R.id.address);*/
+        textInputEditTextBirthdate = findViewById(R.id.birthdate);
+        textInputEditTextAddress = findViewById(R.id.address);
+        //textInputLayoutGender = findViewById(R.id.textInputLayoutGender);
         buttonSignUp = findViewById(R.id.buttonSignUp);
         textViewLogin = findViewById(R.id.loginText);
         progressBar = findViewById(R.id.progress);
         fAuth = FirebaseAuth.getInstance();
+        dropdowntext = findViewById(R.id.dropdowntext);
 
 
         //image_uri=getIntent().getData();
         //convertbase64();
         //icimage = Base64.encodeToString(bytes, Base64.DEFAULT);
         //icimage = getIntent().getStringExtra("icimage");
-        fullname = username = password = email = ic = birthdate = address ="";
+        fullname = username = password = email = ic = gender = dob = address ="";
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 
         //awesomeValidation.addValidation(this,R.id.email, Patterns.EMAIL_ADDRESS,R.string.invalid_email);
         awesomeValidation.addValidation(this, R.id.fullname, RegexTemplate.NOT_EMPTY,R.string.invalid_name);
-        awesomeValidation.addValidation(this, R.id.fullname, RegexTemplate.NOT_EMPTY,R.string.invalid_ic);
-        awesomeValidation.addValidation(this, R.id.fullname, RegexTemplate.NOT_EMPTY,R.string.invalid_username);
+        awesomeValidation.addValidation(this, R.id.ic, RegexTemplate.NOT_EMPTY,R.string.invalid_ic);
+        awesomeValidation.addValidation(this, R.id.username, RegexTemplate.NOT_EMPTY,R.string.invalid_username);
         awesomeValidation.addValidation(this, R.id.password,".{6,}",R.string.invalid_password);
         awesomeValidation.addValidation(this, R.id.confirmpassword,R.id.password, R.string.invalid_confirm_password);
         awesomeValidation.addValidation(this, R.id.email, RegexTemplate.NOT_EMPTY,R.string.invalid_email);
+        awesomeValidation.addValidation(this, R.id.dropdowntext, RegexTemplate.NOT_EMPTY,R.string.invalid_gender);
+        awesomeValidation.addValidation(this, R.id.birthdate, RegexTemplate.NOT_EMPTY,R.string.invalid_dob);
+        awesomeValidation.addValidation(this, R.id.address, RegexTemplate.NOT_EMPTY,R.string.invalid_address);
+
+        dropdowntext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] gender = new String[]{
+                        "M",
+                        "F"
+                };
+
+                ArrayAdapter<String> adapter =  new ArrayAdapter<>(
+                        SignUp.this,R.
+                        layout.dropdown_menu,
+                        gender
+                );
+
+                dropdowntext.setAdapter(adapter);
+            }
+        });
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +141,9 @@ public class SignUp extends AppCompatActivity {
                     password = String.valueOf(textInputEditTextPassword.getText());
                     ic = String.valueOf(textInputEditTextIc.getText());
                     email = String.valueOf(textInputEditTextEmail.getText());
+                    dob = String.valueOf(textInputEditTextBirthdate.getText());
+                    address = String.valueOf(textInputEditTextAddress.getText());
+                    gender = String.valueOf(dropdowntext.getText());
                 /*validateEmail();
                 validatePassword();*/
                 /* if(!password.equals(reenterPassword)){
@@ -119,7 +154,7 @@ public class SignUp extends AppCompatActivity {
                 birthdate = String.valueOf(textInputEditTextBirthdate.getText());
                 address = String.valueOf(textInputEditTextAddress.getText());*/
 
-                    if (!fullname.equals("") && !username.equals("") && !password.equals("") && !ic.equals("") && !email.equals("")) {
+                    if (!fullname.equals("") && !username.equals("") && !dob.equals("") && !address.equals("") && !gender.equals("") && !password.equals("") && !ic.equals("") && !email.equals("")) {
                         fAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -157,9 +192,9 @@ public class SignUp extends AppCompatActivity {
                                 data.put("password", password);
                                 data.put("ic", ic);
                                 data.put("email",email);
-                            /*data.put("birthdate",birthdate);
-                            data.put("address",address);*/
-                                //data.put("icimage",icimage);
+                                data.put("dob",dob);
+                                data.put("address",address);
+                                data.put("gender",gender);
                                 return data;
                             }
                         };
@@ -185,7 +220,7 @@ public class SignUp extends AppCompatActivity {
 
 
 
-       /* textInputEditTextBirthdate.setOnClickListener(new View.OnClickListener() {
+       textInputEditTextBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InputMethodManager imm = (InputMethodManager)getSystemService(
@@ -205,7 +240,7 @@ public class SignUp extends AppCompatActivity {
                         }, year, month, day);
                 picker.show();
             }
-        });*/
+        });
 
        /* buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
