@@ -6,11 +6,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 public class ContactUs extends BaseActivity {
 
     String username;
     DrawerLayout drawerLayout;
+    TextView textViewUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +20,8 @@ public class ContactUs extends BaseActivity {
         setContentView(R.layout.activity_contact_us);
         username = getIntent().getStringExtra("Username");
         drawerLayout = findViewById(R.id.drawer_layout);
+        textViewUsername = findViewById(R.id.textViewUsername);
+        textViewUsername.setText(username);
 
     }
     @Override

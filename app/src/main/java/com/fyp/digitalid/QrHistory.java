@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,6 +38,7 @@ public class QrHistory extends BaseActivity {
     DrawerLayout drawerLayout;
     ListView listView;
     LinearLayout linearLayout;
+    TextView textViewUsername;
     private List<History> historys;
     private Toolbar mToolbar;
     private ActionBar mActionBar;
@@ -59,6 +61,9 @@ public class QrHistory extends BaseActivity {
         manager = new GridLayoutManager(QrHistory.this, 2);
         recyclerView.setLayoutManager(manager);
         historys = new ArrayList<>();
+        textViewUsername = findViewById(R.id.textViewUsername);
+        username = getIntent().getStringExtra("Username");
+        textViewUsername.setText(username);
 
         getHistory();
 
@@ -126,7 +131,6 @@ public class QrHistory extends BaseActivity {
                     public void onResponse(String response) {
                         try{
                             JSONArray array = new JSONArray(response);
-                            //todo only first 10
                             for(int i = 0; i<array.length();i++){
                                 JSONObject object = array.getJSONObject(i);
                                 String name = object.getString("name");

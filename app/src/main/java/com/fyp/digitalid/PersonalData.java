@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 public class PersonalData extends BaseActivity {
 
-    TextView textView1, textView2, textView3, textView4, textView5, textViewUserStatus, textViewGender;
+    TextView textView1, textView2, textView3, textView4, textView5, textViewUserStatus, textViewGender,textViewUsername;
     //private List<UserData> userDataList;
     String username ;
     BufferedInputStream is;
@@ -42,6 +42,9 @@ public class PersonalData extends BaseActivity {
         textViewUserStatus = findViewById(R.id.tvuserstatus);
         textViewGender = findViewById(R.id.textViewGender);
         drawerLayout = findViewById(R.id.drawer_layout);
+        textViewUsername = findViewById(R.id.textViewUsername);
+        username = getIntent().getStringExtra("Username");
+        textViewUsername.setText(username);
 
         getData();
 
