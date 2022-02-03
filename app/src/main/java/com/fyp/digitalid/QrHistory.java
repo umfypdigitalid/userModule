@@ -123,7 +123,7 @@ public class QrHistory extends BaseActivity {
 
     private void getHistory(){
         progressBar.setVisibility(View.VISIBLE);
-        String URL = "http://192.168.0.118:8080/digitalid/retrievehistory2.php?username="+username;
+        String URL = "http://192.168.0.198:8080/digitalid/retrievehistory2.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
 
@@ -137,7 +137,7 @@ public class QrHistory extends BaseActivity {
                                 String scannedon = object.get("scannedon").toString();
                                 String fullname = object.getString("fullname");
                                 String ic = object.getString("ic");
-                                History history = new History(name, scannedon, fullname, ic);
+                                History history = new History(name, scannedon, fullname, ic,username);
                                 historys.add(history);
                                 System.out.println("Add into histroy list");
                             }

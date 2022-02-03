@@ -118,7 +118,7 @@ public class HomePage extends BaseActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("userstatus scanqr: "+userstatus);
-                userstatus=unverified;
+                //userstatus=unverified;
                 if(userstatus.equalsIgnoreCase(verified)) {
                     Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
@@ -191,7 +191,7 @@ public class HomePage extends BaseActivity {
 
     protected void getStatus(){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String showURL = "http://192.168.0.118:8080/digitalid/homepage.php?username="+username;
+        String showURL = "http://192.168.0.198:8080/digitalid/homepage.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

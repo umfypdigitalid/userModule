@@ -77,7 +77,7 @@ public class UserId extends BaseActivity {
     private void getUserID() {
 //
 //        System.out.println("Username: "+username);
-//        String showURL = "http://192.168.0.118:8080/digitalid/userid.php?username="+username;
+//        String showURL = "http://192.168.0.198:8080/digitalid/userid.php?username="+username;
 //        try{
 //
 //            URL url = new URL(showURL);
@@ -103,7 +103,7 @@ public class UserId extends BaseActivity {
 //        }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String showURL = "http://192.168.0.118:8080/digitalid/userid.php?username="+username;
+        String showURL = "http://192.168.0.198:8080/digitalid/userid.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

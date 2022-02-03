@@ -52,9 +52,7 @@ public class Camera extends BaseActivity {
     String icimage,username;
     byte[] bytes;
 
-    private String URL= "http://192.168.0.118:8080/digitalid/updateIcImage.php";
-
-    //todo: store image
+    private String URL= "http://192.168.0.198:8080/digitalid/updateIcImage.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +80,6 @@ public class Camera extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //if system os is >= marshmallow, request runtime permission
-                //todo: choose from gallery
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     if (checkSelfPermission(Manifest.permission.CAMERA) ==
                             PackageManager.PERMISSION_DENIED ||

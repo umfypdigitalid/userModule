@@ -10,9 +10,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DetailedHistorysActivity extends AppCompatActivity {
+public class DetailedHistorysActivity extends BaseActivity {
     private Toolbar mToolbar;
     private ActionBar mActionBar;
+    String username;
     //private ImageView mImage;
     private TextView mName, mScannedon, mFullname, mIc;
 
@@ -32,7 +33,7 @@ public class DetailedHistorysActivity extends AppCompatActivity {
         // Setting up action bar
         //setSupportActionBar(mToolbar);
         mActionBar = getSupportActionBar();
-        mActionBar.setDisplayHomeAsUpEnabled(true);
+        //mActionBar.setDisplayHomeAsUpEnabled(true);
         //mActionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_chevron_left_black_24dp));
 
         // Catching incoming intent
@@ -43,6 +44,8 @@ public class DetailedHistorysActivity extends AppCompatActivity {
         String scannedon = intent.getStringExtra("scannedon");
         String fullname = intent.getStringExtra("fullname");
         String ic = intent.getStringExtra("ic");
+        username = intent.getStringExtra("Username");
+
 
         if (intent !=null){
 
@@ -55,5 +58,13 @@ public class DetailedHistorysActivity extends AppCompatActivity {
             //Glide.with(DetailedProductsActivity.this).load(image).into(mImage);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("Username", username);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

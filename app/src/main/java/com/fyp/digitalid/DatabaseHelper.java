@@ -16,11 +16,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
 
-    private static final String TABLE_NAME = "claimid";
+    private static final String TABLE_NAME = "test2";
     private static final String COL1 = "ID";
-    private static final String COL2 = "claimid";
-    private static final String COL3 = "contractaddress";
-
+    private static final String COL2 = "contractaddress";
+    private static final String COL3 = "ic";
+    private static final String COL4 = "fullname";
+    private static final String COL5 = "dob";
+    private static final String COL6 = "gender";
+    private static final String COL7 = "address";
 
     public DatabaseHelper(Context context) {
         super(context, TABLE_NAME, null, 1);
@@ -29,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL2 + " TEXT, " + COL3 + " TEXT)";
+                COL2 + " TEXT, " + COL3 + " TEXT, " + COL4 + " TEXT, "+ COL5 + " TEXT, " + COL6 + " TEXT, " + COL7  + " TEXT)";
         db.execSQL(createTable);
     }
 
@@ -39,13 +42,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addData(String claimid, String contractaddress ) {
+    public boolean addData(String contractaddress, String ic, String fullname, String dob, String gender, String address ) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL2, claimid);
-        contentValues.put(COL3, contractaddress);
+        contentValues.put(COL2, contractaddress);
+        contentValues.put(COL3, ic);
+        contentValues.put(COL4, fullname);
+        contentValues.put(COL5, dob);
+        contentValues.put(COL6, gender);
+        contentValues.put(COL7, address);
 
-        Log.d(TAG, "addData: Adding claimid: " + claimid + " and contractaddress: " + contractaddress + " to " + TABLE_NAME);
+        Log.d(TAG, "addData: Adding " + contractaddress + ic +fullname+dob+gender+address+" to " + TABLE_NAME);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
@@ -63,23 +70,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public Cursor getData(){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL1 + " DESC LIMIT 1";
+        //String query = "SELECT * FROM " + TABLE_NAME + " WHERE " +COL1 + " =1 ";
         Cursor data = db.rawQuery(query, null);
         return data;
     }
 
     /**
      * Returns only the ID that matches the name passed in
-     * @param name
+     * @param contractAddress
      * @return
      */
-//    public Cursor getItemID(String name){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        String query = "SELECT " + COL1 + " FROM " + TABLE_NAME +
-//                " WHERE " + COL2 + " = '" + name + "'";
-//        Cursor data = db.rawQuery(query, null);
-//        return data;
-//    }
+    public Cursor getID(String contractAddress){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + COL1 + " FROM " + TABLE_NAME +
+                " WHERE " + COL2 + " = '" + contractAddress + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
 
     /**
      * Updates the name field

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,7 +47,7 @@ public class Login extends AppCompatActivity {
     TextView textViewSignUp, textViewForgotPassword;
     ProgressBar progressBar;
     private String username, password, email;
-    private String URL = "http://192.168.0.118:8080/digitalid/login.php";
+    private String URL = "http://192.168.0.198:8080/digitalid/login.php";
     private Timer timer;
     FirebaseAuth fAuth;
 
@@ -106,7 +107,7 @@ public class Login extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(Login.this, "Error! Rest Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "Error! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -135,7 +136,8 @@ public class Login extends AppCompatActivity {
                                 getusername();
 
                             } else {
-                                Toast.makeText(Login.this,"Error! "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(Login.this,"Error! "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                prompterror(Login.this,task.getException().getMessage());
                             }
                         }
                     });
@@ -179,11 +181,27 @@ public class Login extends AppCompatActivity {
         });
 
     }
+    private void prompterror(final Activity activity, String error){
+        AlertDialog builder = new AlertDialog.Builder(activity)
+                .setTitle("Failed to Log in")
+                .setMessage(error)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(activity, Login.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(intent);
+                        activity.finish();
+                    }
+                }).create();
+        builder.show();
+    }
 
     private void getusername(){
         System.out.println("Get username");
         RequestQueue queue = Volley.newRequestQueue(this);
-        String showURL = "http://192.168.0.118:8080/digitalid/username.php?email="+email;
+        String showURL = "http://192.168.0.198:8080/digitalid/username.php?email="+email;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

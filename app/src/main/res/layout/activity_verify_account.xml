@@ -19,16 +19,16 @@
 
     <TextView
         android:id="@+id/tvplsverify"
-        android:layout_width="300dp"
+        android:layout_width="333dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:text="Please verify your account at the verification counter near you to unlock this feature"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.602"
+        app:layout_constraintHorizontal_bias="0.648"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_verifying" />
 

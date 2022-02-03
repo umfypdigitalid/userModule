@@ -94,7 +94,7 @@ public class PersonalData extends BaseActivity {
         //connection
         username = getIntent().getStringExtra("Username");
         System.out.println("Username: "+username);
-        String showURL = "http://192.168.0.118:8080/digitalid/retrieveData.php?username="+username;
+        String showURL = "http://192.168.0.198:8080/digitalid/retrieveData.php?username="+username;
         try{
             URL url = new URL(showURL);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();

@@ -56,7 +56,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="leqingloh0915@gmail.com"
                 android:fontFamily="@font/poppinsmedium"
                 android:drawableEnd="@drawable/ic_user"
                 />
@@ -79,7 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="666666"
                 android:drawableEnd="@drawable/ic_password"
                 android:fontFamily="@font/poppinsmedium"
                 android:inputType="textPassword"

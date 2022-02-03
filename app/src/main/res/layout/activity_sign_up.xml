@@ -151,6 +151,7 @@
                 android:id="@+id/birthdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="none"
                 android:drawableEnd="@drawable/ic_birthdate"
                 android:fontFamily="@font/poppinsmedium" />
         </com.google.android.material.textfield.TextInputLayout>

@@ -32,6 +32,9 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,11 +43,10 @@ public class RegisterScanner extends BaseActivity {
     CodeScanner qrscanner;
     CodeScannerView scannerView;
     TextView resultScan;
-    //Button btnShowQr;
-    String username,name="Test",detail,userid;
-    String claimid = "0x03f37c392bcb3e9e1ca114d09acb4239a90146a76d063c3dabcd9c1f0445991c";
-    String contractaddress = "0xbf5a2561e6663656a5b36CE37AFF7621Acf93203";
-    private String URL= "http://192.168.0.118:8080/digitalid/insertQrHistory.php";
+    String username,name="Test",detail,userid,ic,fullname,dob,address,gender;
+    //String claimid = "0x03f37c392bcb3e9e1ca114d09acb4239a90146a76d063c3dabcd9c1f0445991c";
+    String contractaddress ;
+    private String URL= "http://192.168.0.198:8080/digitalid/insertQrHistory.php";
     DatabaseHelper mDatabaseHelper;
 
     @Override
@@ -67,11 +69,21 @@ public class RegisterScanner extends BaseActivity {
                     public void run() {
                         System.out.println("qrresult: "+result.getText());
                         resultScan.setText(result.getText());
-                        getuserId();
+                        //getuserId();
                         updateUserStatus();
-                        AddData(claimid, contractaddress);
-                        Cursor data = mDatabaseHelper.getData();
-                        verified(RegisterScanner.this);
+                        try {
+                            JSONObject json =new JSONObject(result.toString());
+                            contractaddress = json.getString("claimId_contractAddress_obj");
+                            ic = json.getString("claimId_nric_obj");
+                            fullname = json.getString("claimId_name_obj");
+                            dob = json.getString("claimId_dob_obj");
+                            gender = json.getString("claimId_gender_obj");
+                            address = json.getString("claimId_address_obj");
+                            System.out.println("Contract Address: "+contractaddress);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        AddData(contractaddress,ic,fullname,dob,gender,address);
                     }
                 });
             }
@@ -87,7 +99,7 @@ public class RegisterScanner extends BaseActivity {
 
     private void updateUserStatus() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String showURL = "http://192.168.0.118:8080/digitalid/updateuserstatus.php?username="+username;
+        String showURL = "http://192.168.0.198:8080/digitalid/updateuserstatus.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -109,10 +121,6 @@ public class RegisterScanner extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-//        Intent intent = new Intent();
-//        intent.putExtra("Username", username);
-//        setResult(RESULT_OK, intent);
-//        finish();
         Intent intent = new Intent(getApplicationContext(), HomePage.class);
         intent.putExtra("Username", username);
         startActivity(intent);
@@ -202,7 +210,7 @@ public class RegisterScanner extends BaseActivity {
     }
     protected void getuserId(){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String showURL = "http://192.168.0.118:8080/digitalid/userid.php?username="+username;
+        String showURL = "http://192.168.0.198:8080/digitalid/userid.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -221,11 +229,12 @@ public class RegisterScanner extends BaseActivity {
         queue.add(stringRequest);
     }
 
-    public void AddData(String claimid, String contractaddress) {
-        boolean insertData = mDatabaseHelper.addData(claimid, contractaddress);
+    public void AddData(String contractaddress, String ic, String fullname, String dob, String gender, String address) {
+        boolean insertData = mDatabaseHelper.addData(contractaddress,ic,fullname,dob,gender,address);
 
         if(insertData){
             Toast.makeText(getApplicationContext(),"Data Successfully Inserted!", Toast.LENGTH_SHORT).show();
+            verified(RegisterScanner.this);
         } else {
             Toast.makeText(getApplicationContext(),"Something went wrong", Toast.LENGTH_SHORT).show();
         }

@@ -72,6 +72,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             public void onClick(View v) {
 
                 final Intent intent = new Intent(mContext,DetailedHistorysActivity.class);
+                intent.putExtra("Username",history.getUsername());
                 System.out.println("Name: "+history.getName());
                 System.out.println("Scannedon: "+history.getScannedon());
                 System.out.println("Ic: "+history.getIc());

@@ -1,10 +1,13 @@
 package com.fyp.digitalid;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -65,7 +68,7 @@ public class SignUp extends AppCompatActivity {
     //String icimage;
     String fullname, username, password, email, ic, dob, address,gender;
     TextView emailerror,passwordError,confirmPassError;
-    private String URL = "http://192.168.0.118:8080/digitalid/signup3.php";
+    private String URL = "http://192.168.0.198:8080/digitalid/signup3.php";
    /* Uri image_uri ;
     byte[] bytes;*/
     AwesomeValidation awesomeValidation;
@@ -154,14 +157,15 @@ public class SignUp extends AppCompatActivity {
                 birthdate = String.valueOf(textInputEditTextBirthdate.getText());
                 address = String.valueOf(textInputEditTextAddress.getText());*/
 
-                    if (!fullname.equals("") && !username.equals("") && !dob.equals("") && !address.equals("") && !gender.equals("") && !password.equals("") && !ic.equals("") && !email.equals("")) {
+                    //if (!fullname.equals("") && !username.equals("") && !dob.equals("") && !address.equals("") && !gender.equals("") && !password.equals("") && !ic.equals("") && !email.equals("")) {
                         fAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(getApplicationContext(), "User Created.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Error Creating User! "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getApplicationContext(), "Error Creating User! "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    prompterror(SignUp.this,task.getException().getMessage());
                                 }
                             }
                         });
@@ -175,7 +179,8 @@ public class SignUp extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                                    prompterror(SignUp.this,response);
+                                    //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -200,9 +205,9 @@ public class SignUp extends AppCompatActivity {
                         };
                         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                         requestQueue.add(stringRequest);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
-                    }
+//                    } else {
+//                        Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+//                    }
                 } else {
                     Toast.makeText(getApplicationContext(),"Validation Failed",Toast.LENGTH_SHORT).show();
                 }
@@ -217,8 +222,6 @@ public class SignUp extends AppCompatActivity {
                 finish();
             }
         });
-
-
 
        textInputEditTextBirthdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,7 +238,7 @@ public class SignUp extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                textInputEditTextBirthdate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                textInputEditTextBirthdate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                             }
                         }, year, month, day);
                 picker.show();
@@ -307,9 +310,31 @@ public class SignUp extends AppCompatActivity {
                 }
             }
         });*/
-
-
     }
+
+    private void prompterror(final Activity activity, String error){
+        AlertDialog builder = new AlertDialog.Builder(activity)
+                .setTitle("Failed to Sign Up")
+                .setMessage(error)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(activity, SignUp.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(intent);
+                    }
+                }).create();
+        builder.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SignUp.this,Login.class);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     private void validateEmail() {
         String emailInput = textInputEditTextEmail.getText().toString().trim();
         if (emailInput.isEmpty()) {

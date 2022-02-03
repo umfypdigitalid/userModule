@@ -47,7 +47,7 @@ public class ShowQr extends BaseActivity {
 //            seconds = seconds % 60;
 
 //            timerTextView.setText(String.format("%d:%02d", minutes, seconds));
-            timerHandler.postDelayed(this, 10000);
+            timerHandler.postDelayed(this, 30000);
             //Toast.makeText(getApplicationContext(), "run", Toast.LENGTH_SHORT).show();
 
             btnRefresh.setVisibility(View.VISIBLE);
@@ -61,7 +61,7 @@ public class ShowQr extends BaseActivity {
         genQR();
         btnRefresh.setVisibility(View.GONE);
         output.setVisibility(View.VISIBLE);
-        timerHandler.postDelayed(timerRunnable, 10000);
+        timerHandler.postDelayed(timerRunnable, 30000);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ShowQr extends BaseActivity {
 
         genQR();
 
-        timerHandler.postDelayed(timerRunnable, 10000);
+        timerHandler.postDelayed(timerRunnable, 30000);
         //Toast.makeText(this, "oncreate", Toast.LENGTH_SHORT).show();
 //
 //        Timer timer = new Timer();

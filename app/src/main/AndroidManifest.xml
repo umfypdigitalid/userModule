@@ -63,8 +63,7 @@
             android:parentActivityName=".VerifyAccount" />
         <activity
             android:name=".DetailedHistorysActivity"
-            android:label="Login History"
-            android:parentActivityName=".QrHistory"/>
+            android:label="Login History"/>
         <activity
             android:name=".SignUp"
             android:label="Fill In Your Information"
