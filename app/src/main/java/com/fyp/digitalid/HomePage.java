@@ -123,6 +123,7 @@ public class HomePage extends BaseActivity {
                     Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
                     startActivityForResult(intent,999);
+                    //finish();
                     /*Intent intent = new Intent(getApplicationContext(), QrScanner.class);
                     intent.putExtra("Username", username);
                     startActivity(intent);*/

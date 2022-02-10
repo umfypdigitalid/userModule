@@ -238,7 +238,17 @@ public class SignUp extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                textInputEditTextBirthdate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                                if(monthOfYear+1>=10){
+                                    if(dayOfMonth>=10)
+                                        textInputEditTextBirthdate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                                    else
+                                        textInputEditTextBirthdate.setText(year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth);
+                                }else{
+                                    if(dayOfMonth>=10)
+                                        textInputEditTextBirthdate.setText(year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth);
+                                    else
+                                        textInputEditTextBirthdate.setText(year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth);
+                                }
                             }
                         }, year, month, day);
                 picker.show();

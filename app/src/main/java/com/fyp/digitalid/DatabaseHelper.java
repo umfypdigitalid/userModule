@@ -15,8 +15,8 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
-
-    private static final String TABLE_NAME = "test2";
+    //test3
+    private static final String TABLE_NAME = "test4";
     private static final String COL1 = "ID";
     private static final String COL2 = "contractaddress";
     private static final String COL3 = "ic";
@@ -24,6 +24,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL5 = "dob";
     private static final String COL6 = "gender";
     private static final String COL7 = "address";
+    private static final String COL8 = "userid";
+
 
     public DatabaseHelper(Context context) {
         super(context, TABLE_NAME, null, 1);
@@ -32,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL2 + " TEXT, " + COL3 + " TEXT, " + COL4 + " TEXT, "+ COL5 + " TEXT, " + COL6 + " TEXT, " + COL7  + " TEXT)";
+                COL2 + " TEXT, " + COL3 + " TEXT, " + COL4 + " TEXT, "+ COL5 + " TEXT, " + COL6 + " TEXT, " + COL7  + " TEXT, " + COL8 + " TEXT)";
         db.execSQL(createTable);
     }
 
@@ -42,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addData(String contractaddress, String ic, String fullname, String dob, String gender, String address ) {
+    public boolean addData(String contractaddress, String ic, String fullname, String dob, String gender, String address, String userid ) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, contractaddress);
@@ -51,8 +53,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL5, dob);
         contentValues.put(COL6, gender);
         contentValues.put(COL7, address);
+        contentValues.put(COL8, userid);
 
-        Log.d(TAG, "addData: Adding " + contractaddress + ic +fullname+dob+gender+address+" to " + TABLE_NAME);
+        Log.d(TAG, "addData: Adding " + contractaddress + ic +fullname+dob+gender+address+userid+" to " + TABLE_NAME);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
@@ -68,11 +71,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Returns all the data from database
      * @return
      */
-    public Cursor getData(){
+    public Cursor getData(String userId){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL1 + " DESC LIMIT 1";
-        //String query = "SELECT * FROM " + TABLE_NAME + " WHERE " +COL1 + " =1 ";
+        System.out.println("IC in get data db: "+userId);
+        //String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL1 + " DESC LIMIT 1";
+        //String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL1 + "=1";
+        //String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " +COL3 + " = '" + nric + "'";
+        //String query = "SELECT * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL8 + " = '" + userId + "'";
+        //String query = "SELECT "+COL2+" FROM " + TABLE_NAME + " WHERE ic = '" + nric + "'";
+        //String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " +COL3 + " = '510317135131'";
         Cursor data = db.rawQuery(query, null);
+        //System.out.println("Data:"+data.getString(1));
         return data;
     }
 

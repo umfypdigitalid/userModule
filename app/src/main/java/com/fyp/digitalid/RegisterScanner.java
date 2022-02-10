@@ -70,20 +70,26 @@ public class RegisterScanner extends BaseActivity {
                         System.out.println("qrresult: "+result.getText());
                         resultScan.setText(result.getText());
                         //getuserId();
-                        updateUserStatus();
                         try {
                             JSONObject json =new JSONObject(result.toString());
                             contractaddress = json.getString("claimId_contractAddress_obj");
+                            System.out.println("Contract address: "+contractaddress);
                             ic = json.getString("claimId_nric_obj");
                             fullname = json.getString("claimId_name_obj");
                             dob = json.getString("claimId_dob_obj");
                             gender = json.getString("claimId_gender_obj");
                             address = json.getString("claimId_address_obj");
-                            System.out.println("Contract Address: "+contractaddress);
+                            /*if(contractaddress==null||contractaddress.equals("")||contractaddress.equals("")||contractaddress.equals("")||contractaddress.equals("")||contractaddress.equals("")){
+                                promptError(RegisterScanner.this);
+                            }
+                            System.out.println("Contract Address: "+contractaddress);*/
+                            AddData(contractaddress,ic,fullname,dob,gender,address);
+                            updateUserStatus();
                         } catch (JSONException e) {
+                            promptError(RegisterScanner.this);
                             e.printStackTrace();
                         }
-                        AddData(contractaddress,ic,fullname,dob,gender,address);
+
                     }
                 });
             }
@@ -95,6 +101,21 @@ public class RegisterScanner extends BaseActivity {
                 qrscanner.startPreview();
             }
         });
+    }
+
+    private void promptError(Activity activity) {
+        AlertDialog builder = new AlertDialog.Builder(activity)
+                .setTitle("Invalid QR")
+                .setMessage("Please try again." )
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(RegisterScanner.this, RegisterScanner.class);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
+                    }
+                }).create();
+        builder.show();
     }
 
     private void updateUserStatus() {
@@ -208,7 +229,7 @@ public class RegisterScanner extends BaseActivity {
             Toast.makeText(getApplicationContext(), "Please scan the QR code again", Toast.LENGTH_SHORT).show();
         }
     }
-    protected void getuserId(){
+    public void getuserId(){
         RequestQueue queue = Volley.newRequestQueue(this);
         String showURL = "http://192.168.0.198:8080/digitalid/userid.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
@@ -217,8 +238,8 @@ public class RegisterScanner extends BaseActivity {
                 //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                 userid = response;
                 System.out.println("userid from response: "+userid);
-                detail= String.valueOf(resultScan.getText());
-                putData(detail,userid);
+                //detail= String.valueOf(resultScan.getText());
+                //putData(detail,userid);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -230,14 +251,34 @@ public class RegisterScanner extends BaseActivity {
     }
 
     public void AddData(String contractaddress, String ic, String fullname, String dob, String gender, String address) {
-        boolean insertData = mDatabaseHelper.addData(contractaddress,ic,fullname,dob,gender,address);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String showURL = "http://192.168.0.198:8080/digitalid/userid.php?username="+username;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                userid = response;
+                System.out.println("userid from response: "+userid);
+                //detail= String.valueOf(resultScan.getText());
+                //putData(detail,userid);
+                boolean insertData = mDatabaseHelper.addData(contractaddress,ic,fullname,dob,gender,address,userid);
 
-        if(insertData){
-            Toast.makeText(getApplicationContext(),"Data Successfully Inserted!", Toast.LENGTH_SHORT).show();
-            verified(RegisterScanner.this);
-        } else {
-            Toast.makeText(getApplicationContext(),"Something went wrong", Toast.LENGTH_SHORT).show();
-        }
+                if(insertData){
+                    Toast.makeText(getApplicationContext(),"Data Successfully Inserted!", Toast.LENGTH_SHORT).show();
+                    verified(RegisterScanner.this);
+                } else {
+                    Toast.makeText(getApplicationContext(),"Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(stringRequest);
+
+
     }
 
 

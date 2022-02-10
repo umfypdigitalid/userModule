@@ -87,7 +87,6 @@ public class QrScanner extends BaseActivity {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.VISIBLE);
-                        System.out.println("qrresult: "+result.getText());
                         resultScan.setText(result.getText());
                         try {
                             JSONObject json =new JSONObject(result.toString());
@@ -96,18 +95,17 @@ public class QrScanner extends BaseActivity {
                             type = json.getString("type");
                             if(type.equals("1")){
                                 selection=json.getString("selection");
-                                System.out.println("Selection: "+selection);
                             }
                             name = json.getString("name");
                             reply = json.getString("reply");
-
-                            System.out.println("UID: "+ uid +"\n Type: "+type);
                             try {
                                 promptPermission(QrScanner.this);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         } catch (JSONException e) {
+                            promptError(QrScanner.this);
+                            progressBar.setVisibility(View.GONE);
                             e.printStackTrace();
                         }
                     }
@@ -123,9 +121,26 @@ public class QrScanner extends BaseActivity {
         });
     }
 
+    private void promptError(Activity activity) {
+        AlertDialog builder = new AlertDialog.Builder(activity)
+                .setTitle("Invalid QR")
+                .setMessage("Please try again." )
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(QrScanner.this, QrScanner.class);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
+                        finish();
+                    }
+                }).create();
+        builder.show();
+    }
+
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
+        super.onBackPressed();
+        Intent intent = new Intent(QrScanner.this,HomePage.class);
         intent.putExtra("Username", username);
         setResult(RESULT_OK, intent);
         finish();
@@ -195,7 +210,7 @@ public class QrScanner extends BaseActivity {
             Toast.makeText(getApplicationContext(), "Please scan the QR code again", Toast.LENGTH_SHORT).show();
         }
     }
-    protected void getuserId(){
+    protected void getuserId(String selection, String url){
         RequestQueue queue = Volley.newRequestQueue(this);
         String showURL = "http://192.168.0.198:8080/digitalid/userid.php?username="+username;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, showURL, new Response.Listener<String>() {
@@ -205,8 +220,13 @@ public class QrScanner extends BaseActivity {
                     userid = response;
                     System.out.println("userid from response: "+userid);
                     detail= String.valueOf(resultScan.getText());
-
-                putData(detail,userid,username);
+                    getContractAddress(userid);
+                    try {
+                        getJson(selection,url);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                //putData(detail,userid,username);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -219,8 +239,12 @@ public class QrScanner extends BaseActivity {
 
     protected void httpPostJson (String selection, String url) throws JSONException {
         System.out.println("post selection: "+selection);
-        getContractAddress();
         getData();
+        getuserId(selection,url);
+
+    }
+
+    private void getJson(String selection, String url) throws JSONException {
         JSONObject json = new JSONObject();
         JSONObject data = new JSONObject();
         json.put("retry", retry);
@@ -228,23 +252,25 @@ public class QrScanner extends BaseActivity {
         json.put("type", type);
         json.put("contractAddress",contractAddress);
 
-        if(selection.charAt(0)=='1') {
-            System.out.println("IC in json: "+ic);
-            data.put("IC", ic);
+        if(selection!=null) {
+            if (selection.charAt(0) == '1') {
+                System.out.println("IC in json: " + ic);
+                data.put("IC", ic);
+            }
+            if (selection.charAt(1) == '1') {
+                data.put("Name", fullname);
+            }
+            if (selection.charAt(2) == '1') {
+                data.put("DOB", dob);
+            }
+            if (selection.charAt(3) == '1') {
+                data.put("Gender", gender);
+            }
+            if (selection.charAt(4) == '1') {
+                data.put("Address", address);
+            }
+            json.put("data", data);
         }
-        if(selection.charAt(1)=='1') {
-            data.put("Name", fullname);
-        }
-        if(selection.charAt(2)=='1') {
-            data.put("DOB", dob);
-        }
-        if(selection.charAt(3)=='1') {
-            data.put("Gender", gender);
-        }
-        if(selection.charAt(4)=='1') {
-            data.put("Address", address);
-        }
-        json.put("data", data);
         System.out.println("JSON request: "+json);
 
         if(json!=null) {
@@ -253,7 +279,9 @@ public class QrScanner extends BaseActivity {
                 public void onResponse(String response) {
                     System.out.println(response);
                     if (response.equals("Success")) {
-                        getuserId();
+                        //getuserId();
+                        System.out.println("put data: \n"+detail+"\n"+userid+"\n"+username);
+                        putData(detail,userid,username);
                         Intent intent = new Intent(QrScanner.this, HomePage.class);
                         intent.putExtra("Username", username);
                         startActivity(intent);
@@ -284,66 +312,80 @@ public class QrScanner extends BaseActivity {
         }
     }
 
-    private void getContractAddress() {
-        Cursor res = mDatabaseHelper.getData();
+    private void getContractAddress(String userid) {
+        Cursor res = mDatabaseHelper.getData(userid);
+        /*//if (res.moveToFirst()){
+            System.out.println("move to first");
+            contractAddress=res.getString(1);
+        //} while (res.moveToNext())*/
+        StringBuffer buffer = new StringBuffer();
+        /*contractAddress= res.getString(2);*/
+
         if(res.getCount()==0){
             Toast.makeText(getApplicationContext(), "No Entry Exists", Toast.LENGTH_SHORT).show();
             return;
         }
-        StringBuffer buffer = new StringBuffer();
+
         while (res.moveToNext()){
             buffer.append("ID: " + res.getString(0)+"\n");
             buffer.append("Contract Address: " + res.getString(1)+"\n");
+            buffer.append("User id: "+res.getString(7)+"\n");
             contractAddress=res.getString(1);
         }
         System.out.println(buffer.toString());
+        System.out.println("Contract Address from db: "+contractAddress);
+
     }
 
     protected void promptPermission(Activity activity) throws JSONException {
         //check accept or reject
         //initialize alert
-        if (selection.charAt(0) == '1') {
-            field.append("- NRIC" + "\n");
-        }
-        if (selection.charAt(1) == '1') {
-            field.append("- Fullname" + "\n");
-        }
-        if (selection.charAt(2) == '1') {
-            field.append("- Birthdate" + "\n");
-        }
-        if (selection.charAt(3) == '1') {
-            field.append("- Gender" + "\n");
-        }
-        if (selection.charAt(4) == '1') {
-            field.append("- Home Address" + "\n");
-        }
+        if(selection!=null) {
+            if (selection.charAt(0) == '1') {
+                field.append("\n- NRIC" + "\n");
+            }
+            if (selection.charAt(1) == '1') {
+                field.append("- Fullname" + "\n");
+            }
+            if (selection.charAt(2) == '1') {
+                field.append("- Birthdate" + "\n");
+            }
+            if (selection.charAt(3) == '1') {
+                field.append("- Gender" + "\n");
+            }
+            if (selection.charAt(4) == '1') {
+                field.append("- Home Address" + "\n");
+            }
 
-        if (type.equals("1")) {
-            progressBar.setVisibility(View.GONE);
-            AlertDialog builder = new AlertDialog.Builder(activity)
-                    .setTitle("Access Permission")
-                    .setMessage("This e-Service would like to request for the information from your profile:" + field.toString())
-                    .setNegativeButton("Reject", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "Third Party Website Log In Failed.", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                progressBar.setVisibility(View.VISIBLE);
-                                httpPostJson(selection, posturl);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+            //if (type.equals("1")) {
+                progressBar.setVisibility(View.GONE);
+                AlertDialog builder = new AlertDialog.Builder(activity)
+                        .setTitle("Access Permission")
+                        .setMessage("This e-Service would like to request for the information from your profile:" + field.toString())
+                        .setNegativeButton("Reject", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getApplicationContext(), "Third Party Website Log In Failed.", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                    }).create();
-            builder.show();
-        }
-        if (type.equals("2")){
+                        })
+                        .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    httpPostJson(selection, posturl);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).create();
+                builder.show();
+                field = new StringBuffer();
+            //}
+        }else{
+
+        //if (type.equals("2")){
             progressBar.setVisibility(View.GONE);
             AlertDialog builder = new AlertDialog.Builder(activity)
                     .setTitle("Access Permission")
